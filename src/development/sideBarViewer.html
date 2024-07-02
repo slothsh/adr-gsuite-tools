@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{title}}</title>
+  </head>
+
+  <body>
+    <div id="{{idConsole}}"></div>
+
+    <div id="{{idViewer}}">
+      <div id="{{idViewerNavigator}}" class="border-bottom border-black">
+        <form id="{{idViewerNavigatorForm}}" method="get">
+          <select id="{{idViewerSelection}}" class="form-select" aria-label="Select a target">
+            <option value="{{defaultSelectedValue}}" selected>
+              {{viewerDefaultTarget}}
+            </option>
+            {{#each viewerTargetItems}}
+            <option value="{{this.id}}">{{this.name}}</option>
+            {{/each}}
+          </select>
+        </form>
+      </div>
+
+      <div id="{{idViewerTarget}}" class="viewer-target-empty">
+        {{viewerDefaultTarget}}
+      </div>
+    </div>
+
+    <!-- Dependencies -->
+    <!-- -------------------------------------------------------------------------------- -->
+
+    {{{inline-script "node_modules/@popperjs/core/dist/umd/popper.min.js"}}}
+    {{{inline-script "node_modules/bootstrap/dist/js/bootstrap.min.js"}}}
+
+    <!-- -------------------------------------------------------------------------------- -->
+  </body>
+
+</html>

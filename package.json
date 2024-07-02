@@ -1,12 +1,12 @@
 {
   "type": "module",
   "name": "Adrenaline Studios Project Manager",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Stefan Olivier",
   "authorEmail": "stefan@adrenaline.global",
   "authorWebsite": "https://stefanolivier.com",
   "scripts": {
-    "build": "npm run configure && npm run build-client-environment npm run build-library && npm run build-markdown && npm run build-static && npm run assemble",
+    "build": "npm run configure && npm run build-client-environment && npm run build-library && npm run build-markdown && npm run build-static && npm run assemble",
     "development": "npm run configure && npm run build-client-environment && npm run build-markdown && npm run build-markdown-dev",
     "configure": "mkdir -p build && npx esbuild --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/configure.js ./scripts/configure.ts && BASE_DIR=. node ./build/configure.js",
     "assemble": "npx esbuild --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/assemble.js ./scripts/assemble.ts && BASE_DIR=. node ./build/assemble.js",
@@ -25,6 +25,7 @@
     "@popperjs/core": "^2.11.8",
     "@types/bootstrap": "^5.2.10",
     "@types/google-apps-script": "^1.0.83",
+    "@types/jsdom": "^21.1.7",
     "@types/node": "^20.12.13",
     "@types/rollup": "^0.54.0",
     "acorn": "^8.11.3",

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{projectName}}</title>
+    </head>
+
+    <body>
+        <div class="text-start mt-4 px-4 h-100">
+            {{{ inline-svg-icon
+                "assets/logo-adrenaline.svg"
+                logoWidth
+                logoHeight
+                class="mx-auto d-block"
+                style="filter: drop-shadow(0.25rem 0.25rem 12px rgba(0, 0, 0, 0.25))"
+            }}}
+
+            <h5 class="mt-4 text-center w-100 font-weight-bold">{{copyrightInfo}}</h5>
+            <table class="table table-hover mt-4 info-table text-start">
+                <thead>
+                    <tr>
+                        <th colspan="3" scope="row">{{projectName}}</th>
+                    </tr>
+                </thead>
+                <tbody id="{{idVersionTableBody}}">
+                    {{#each versionItems}}
+                    <tr index="{{this.id}}"
+                        value="{{this.value}}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="Copy to clipboard"
+                    >
+                        <th scope="row">{{this.title}}</th>
+                        <td style="font-size: {{this.fontSize}};">{{this.value}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+
+            <button id="{{idButtonClose}}" type="button" class="btn btn-primary w-100">Close</button>
+        </div>
+
+        <!-- Dependencies -->
+        <!-- -------------------------------------------------------------------------------- -->
+
+        {{{inline-script "node_modules/@popperjs/core/dist/umd/popper.min.js"}}}
+        {{{inline-script "node_modules/bootstrap/dist/js/bootstrap.min.js"}}}
+
+        <!-- -------------------------------------------------------------------------------- -->
+    </body>
+</html>

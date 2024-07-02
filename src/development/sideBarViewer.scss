@@ -1,0 +1,58 @@
+// Copyright (c) 2024 Stefan Olivier
+// <https://stefanolivier.com>
+
+@import "common";
+
+$sidebar-w: 70vw;
+$viewer-x: $sidebar-w;
+$viewer-w: 100vw - $sidebar-w;
+$navigator-h: 80px;
+$target-h: calc(100% - $navigator-h);
+
+body {
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+}
+
+#console {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: $sidebar-w;
+    height: 100vh;
+    background-color: $body-bg;
+}
+
+#viewer {
+    position: absolute;
+    width: $viewer-w;
+    height: 100vh;
+    top: 0px;
+    left: $viewer-x;
+    background-color: $body-tertiary-bg;
+}
+
+#viewerNavigator {
+    width: 100%;
+    height: $navigator-h;
+    background-color: $body-tertiary-bg;
+    padding: 1rem;
+}
+
+#viewerNavigatorForm {
+    width: 100%;
+}
+
+#viewerTarget {
+    width: 100%;
+    height: $target-h;
+    background-color: $body-tertiary-bg;
+}
+
+.viewer-target-empty {
+    font-size: $font-size-base;
+    font-weight: font-weight-medium;
+    text-align: center;
+}
