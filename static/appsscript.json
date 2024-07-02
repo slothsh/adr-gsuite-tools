@@ -2,7 +2,8 @@
     "timeZone": "Africa/Johannesburg",
     "dependencies": {},
     "oauthScopes": [
-        "https://www.googleapis.com/auth/script.external_request"
+        "https://www.googleapis.com/auth/script.external_request",
+        "https://www.googleapis.com/auth/script.container.ui"
     ],
     "exceptionLogging": "STACKDRIVER",
     "runtimeVersion": "V8"
