@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "nodenext",
+        "target": "esnext",
+        "baseUrl": ".",
+        "esModuleInterop": true,
+        "paths": {
+            "@src": ["src"],
+            "@environment": ["src/environment.d.ts"],
+            "@html": ["src/htmlFiles.d.ts"]
+        }
+    }
+}

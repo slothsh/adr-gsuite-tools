@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+dump
+dist
+.DS_Store
+.env
+.clasp.json
