@@ -2,8 +2,8 @@ import { HtmlFiles } from "@html";
 
 export function sidebarMenuVersion() {
     const html = HtmlService
-        .createTemplateFromFile(HtmlFiles.VERSION)
-        .evaluate();
+        .createHtmlOutputFromFile(HtmlFiles.VERSION)
+        .setTitle("Version");
 
     SpreadsheetApp
         .getUi()
