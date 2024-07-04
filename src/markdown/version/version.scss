@@ -6,29 +6,54 @@
 // Version Styling
 // --------------------------------------------------------------------------------
 
-.info-table tbody {
-    cursor: pointer;
+$border-radius: 8px;
+
+body * {
+    font-size: 0.8rem;
 }
 
-.info-table thead tr:first-child :first-child {
-    border-top-left-radius: 8px;
-}
+table.info-table {
+    display: block;
+    table-layout: fixed;
+    overflow-x: hidden;
+    filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.1));
 
-.info-table thead tr:first-child :last-child {
-    border-top-right-radius: 8px;
-}
+    > thead > tr:first-child > th:first-child {
+        border-top-left-radius: $border-radius;
+        border-top-right-radius: $border-radius;
+    }
 
-.info-table tbody tr:last-child :first-child {
-    border-bottom-left-radius: 8px;
-}
+    > tbody > tr:last-child > td:last-child {
+        border-bottom-left-radius: $border-radius;
+        border-bottom-right-radius: $border-radius;
+    }
 
-.info-table tbody tr:last-child :last-child {
-    border-bottom-right-radius: 8px;
-}
+    thead th {
+        color: $white;
+        background-color: $primary;
+    }
 
-.info-table td {
-    overflow: hidden;
-    vertical-align: middle;
+    tbody {
+        cursor: pointer;
+    }
+
+    td {
+        overflow: hidden;
+        vertical-align: middle;
+    }
+
+    tbody, thead, tr, th, td {
+        display: inline-block;
+        width: 100%;
+    }
+
+    tbody th {
+        background-color: $light;
+    }
+
+    span.text-item {
+        display: block;
+    }
 }
 
 // --------------------------------------------------------------------------------

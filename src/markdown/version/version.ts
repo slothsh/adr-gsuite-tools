@@ -14,19 +14,19 @@ const VERSION_ITEMS = [
         id: 0,
         title: "Contact",
         value: Config.AUTHOR_EMAIL,
-        fontSize: (Config.AUTHOR_EMAIL.length > 32) ? "0.5rem" : "1rem",
+        fontSize: (Config.AUTHOR_EMAIL.length > 32) ? "0.6rem" : "inherit",
     },
     {
         id: 1,
         title: "Version",
         value: Config.VERSION,
-        fontSize: (Config.VERSION.length > 32) ? "0.5rem" : "1rem",
+        fontSize: (Config.VERSION.length > 32) ? "0.6rem" : "inherit",
     },
     {
         id: 2,
         title: "Commit Hash",
         value: Config.COMMIT_HASH,
-        fontSize: (Config.COMMIT_HASH.length > 32) ? "0.5rem" : "1rem",
+        fontSize: (Config.COMMIT_HASH.length > 32) ? "0.6rem" : "inherit",
     },
 ];
 
@@ -119,8 +119,8 @@ export default {
     copyrightInfo: COPYRIGHT_TEXT,
     projectName: Config.PROJECT_NAME,
 
-    logoWidth: 250,
-    logoHeight: 250,
+    logoWidth: 210,
+    logoHeight: 210,
     tooltipDefaultTitle: TOOLTIP_DEFAULT_TITLE,
 
     // Event Handlers
