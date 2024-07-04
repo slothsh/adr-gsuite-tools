@@ -66,7 +66,7 @@ const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]
 // @ts-ignore
 const tooltipList = [...tooltipTriggerList]
     .map((tooltipTriggerElement, index) => {
-        const tooltip = new bootstrap.Tooltip(tooltipTriggerElement, {
+        const tooltip = new Tooltip(tooltipTriggerElement, {
             animation: false,
         });
 

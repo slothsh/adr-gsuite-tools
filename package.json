@@ -31,6 +31,8 @@
     "acorn": "^8.11.3",
     "bootstrap": "^5.3.3",
     "esbuild": "0.21.4",
+    "escodegen": "^2.1.0",
+    "estraverse": "^5.3.0",
     "fast-glob": "^3.3.2",
     "handlebars": "^4.7.8",
     "jsdom": "^24.1.0",

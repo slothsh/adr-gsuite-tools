@@ -7,6 +7,8 @@ import { execSync } from "node:child_process";
 import * as esbuild from "esbuild";
 import ts2gas from "ts2gas";
 import * as acorn from "acorn";
+import * as esc from "escodegen";
+import * as est from "estraverse";
 import tsc, { type CompilerOptions } from "typescript";
 import Handlebars from "handlebars";
 import { parse as parseHtml, Node as HtmlParserNode, HTMLElement as HtmlParserElement } from "node-html-parser";
@@ -256,7 +258,7 @@ export function replaceSubstring(str: string, start: number, end: number, replac
 // --------------------------------------------------------------------------------
 
 type HandlebarsOptionsHash = { hash: { [key: string]: string }};
-type HandlebarsOptions = HandlebarsOptionsHash & { [key: any]: any };
+type HandlebarsOptions = HandlebarsOptionsHash & { [key: PropertyKey]: any };
 
 class HandlebarsHelper {
     constructor(name: string, procedure: Handlebars.HelperDelegate) {
@@ -513,32 +515,6 @@ export function stylesForMarkdownTemplate(unit: MarkdownCompilationUnit): Result
     return Ok();
 }
 
-export function replaceHostCodeForMarkdownTemplate(unit: MarkdownCompilationUnit): Result {
-    try {
-        if (unit.markdownScript) {
-            // @ts-ignore
-            const ast = tsc.createSourceFile(
-                unit.markdownScript.file + ".ts",
-                unit.markdownScript.compiledSource,
-                tsc.ScriptTarget.Latest,
-                true,
-            );
-
-            ast.forEachChild((child) => {
-                console.log(child.re);
-            })
-            
-            process.exit(1);
-        }
-    }
-
-    catch (error: any){
-        return Err(`host code stub replacement for "${unit.file}" failed with message: ${error}`);
-    }
-
-    return Ok();
-}
-
 export async function compileTsBundle(unit: TsCompilationUnit): Promise<Result> {
     try {
         const interimFile = `${BUILD_DIR_CACHE}/${basename(unit.file.toString(), "." + unit.extension)}.js`
@@ -676,32 +652,55 @@ export async function compileMarkdownTemplate(unit: MarkdownCompilationUnit): Pr
             if (existsSync(interimFile)) {
                 let compileDomSource = readFileSync(interimFile, "utf-8").toString(); 
 
-                // TODO: Add this to the AST more elegantly
-                const compileDomAst = acorn.parse(compileDomSource, { ecmaVersion: "latest" });
-                type Node = acorn.Statement | acorn.ModuleDeclaration;
-                const astNodes: Array<Node> = [];
+                const compiledDomAst = acorn.parse(compileDomSource, { ecmaVersion: "latest" });
+                let firstIIFEFound = false;
+                est.traverse(compiledDomAst, {
+                    enter: function (node: any) {
+                        if (!firstIIFEFound && node.type === "ArrowFunctionExpression") {
+                            firstIIFEFound = true;
 
-                for (const n of compileDomAst.body) {
-                    // @ts-ignore
-                    astNodes.push(...getNodes(n));
-                }
+                            const expressionNode = {
+                                type: "ExpressionStatement",
+                                expression: {
+                                    type: "AssignmentExpression",
+                                    operator: "=",
+                                    left: {
+                                        type: "MemberExpression",
+                                        computed: false,
+                                        object: {
+                                            type: "Identifier",
+                                            name: "window"
+                                        },
+                                        property: {
+                                            type: "Identifier",
+                                            name: "domExports"
+                                        }
+                                    },
+                                    right: {
+                                        type: "ObjectExpression",
+                                        properties: [
+                                            {
+                                                type: "SpreadElement",
+                                                argument: {
+                                                    type: "Identifier",
+                                                    name: `${basename(markdownSourceFile, "." + unit.markdownScript.extension)}_default`,
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            };
 
-                const expressionNodes = astNodes
-                    .filter((item: acorn.Node) => {
-                        return item.type === "ExpressionStatement"
-                            && (<acorn.ExpressionStatement>item).expression.type === "AssignmentExpression"
-                            && (<acorn.AssignmentExpression>(<acorn.ExpressionStatement>item).expression).left.type === "Identifier"
-                            && (<acorn.Identifier>(<acorn.AssignmentExpression>(<acorn.ExpressionStatement>item).expression).left).name.match(/^.+_default$/) !== null;
-                    });
+                            node.body.body.push(expressionNode);
+                        }
+                    }
+                });
 
-                compileDomSource =
-                    compileDomSource.slice(0, -6)
-                    + `\nwindow.domExports = { ...${basename(markdownSourceFile, "." + unit.markdownScript.extension)}_default };\n`
-                    + "\n})();";
+                const exportInjectedCode = esc.generate(compiledDomAst);
 
                 const dom = new JSDOM("<!DOCTYPE html><body></body>", { runScripts: "dangerously", resources: "usable" });
                 const scriptElement = dom.window._document.createElement("script");
-                scriptElement.textContent = compileDomSource;
+                scriptElement.textContent = exportInjectedCode;
                 dom.window._document.body.appendChild(scriptElement);
                 const state = dom.window["domExports"];
                 unit.compiledSource = markdownTemplate(state);
