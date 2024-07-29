@@ -109,7 +109,6 @@ export class PrefixTree {
                    placeholder: string = "_",
                    returnSource: boolean = false): string {
         const allWords: Array<TokenWithSource> = text
-            .toLowerCase()
             .split(" ")
             .map((source) => {
                 const matches = source.match(/[A-z\-]+/);
@@ -149,7 +148,6 @@ export class PrefixTree {
 
     transposeText(text: string): string {
         const allWords: Array<TokenWithSource> = text
-            .toLowerCase()
             .split(" ")
             .map((source) => {
                 const matches = source.match(/[A-z\-]+/);
