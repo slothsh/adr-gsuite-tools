@@ -43,3 +43,13 @@ export function getDocumentValue(key: string): string | null {
         return null;
     }
 }
+
+export class DocumentInfo {
+    static currentDocumentInfo(): DocumentInfo | null {
+        const documentInfo = new DocumentInfo();
+        return documentInfo;
+    }
+
+    private constructor() {
+    }
+}

@@ -1,5 +1,4 @@
 import { Config } from "@environment";
-import { sidebarMenuVersion } from "sidebarmenus/sidebarMenuVersion";
 
 function onOpen(): void {
   const ui = SpreadsheetApp.getUi();
@@ -7,4 +6,8 @@ function onOpen(): void {
   ui.createMenu(Config.PROJECT_NAME)
     .addItem("Version", "sidebarMenuVersion")
     .addToUi();
+}
+
+function onInstall(): void {
+  onOpen();
 }

@@ -11,7 +11,7 @@ import {
     ERROR,
     BUILD_DIR_CACHE,
     SRC_MARKDOWN_DIR,
-} from "./common";
+} from "./common.ts";
 
 // Reflection Helpers
 // --------------------------------------------------------------------------------

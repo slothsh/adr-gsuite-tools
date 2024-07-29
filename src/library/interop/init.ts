@@ -1,5 +1,5 @@
-import { type KeyStringValue, type KeyDefault } from "../utility/types";
-import { StaticFileName, StaticSheetName } from "./interop";
+import { type KeyStringValue, type KeyDefault } from "../utility/types.ts";
+import { StaticFileName, StaticSheetName } from "./interop.ts";
 
 interface DefaultProperties {
     document: Array<KeyDefault>

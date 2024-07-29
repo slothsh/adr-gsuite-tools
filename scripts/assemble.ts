@@ -12,7 +12,7 @@ import {
     BUILD_DIR_MARKDOWN,
     BUILD_DIR_STATIC,
     DIST_DIR,
-} from "./common";
+} from "./common.ts";
 
 // Assemble Distribution Files Step
 // --------------------------------------------------------------------------------

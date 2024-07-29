@@ -14,7 +14,7 @@ import {
     injectLicense,
     writeCompilationUnit,
     type TsCompilationUnit,
-} from "./common";
+} from "./common.ts";
 
 // Compilation Units
 // --------------------------------------------------------------------------------

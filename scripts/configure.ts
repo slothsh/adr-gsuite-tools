@@ -15,7 +15,7 @@ import {
     BUILD_DIR_STATIC,
     BUILD_DIR_DEVELOPMENT,
     BUILD_DIR_CACHE,
-} from "./common";
+} from "./common.ts";
 
 // Configure Directories
 // --------------------------------------------------------------------------------

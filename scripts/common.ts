@@ -58,6 +58,7 @@ export const SRC_DIR = resolve(baseDir, "src");
 export const BUILD_DIR = resolve(baseDir, "build");
 export const SCRIPTS_DIR = resolve(baseDir, "scripts");
 export const STATIC_FILES_DIR = resolve(baseDir, "static");
+export const DATA_DIR = resolve(baseDir, "data");
 export const TSCONFIG_PATH = resolve(baseDir, "tsconfig.json");
 
 export const SRC_LIBRARY_DIR = resolve(SRC_DIR, "library");
@@ -80,12 +81,12 @@ const buildTimeAliases = {
             return { path: resolve(BUILD_DIR_CACHE, "clientConfig.js") }
         });
 
-        // build.onResolve({ filter: /^@src\// }, (args: any) => {
-        //     return { path: args.path.replace(/^@src\//, "src/") }
-        // });
-
         build.onResolve({ filter: /^@html$/ }, (args: any) => {
             return { path: resolve(BUILD_DIR_CACHE, "clientHtmlFiles.js") }
+        });
+
+        build.onResolve({ filter: /^@dictionaries$/ }, (args: any) => {
+            return { path: resolve(BUILD_DIR_CACHE, "clientStaticData.js") }
         });
     },
 }

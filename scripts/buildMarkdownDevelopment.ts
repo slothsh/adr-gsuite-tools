@@ -22,7 +22,7 @@ import {
     prettyHtml,
     initializeHandlebars,
     type MarkdownCompilationUnit,
-} from "./common";
+} from "./common.ts";
 
 // Markdown Templates Step
 // --------------------------------------------------------------------------------

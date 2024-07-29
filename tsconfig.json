@@ -3,9 +3,12 @@
         "target": "esnext",
         "baseUrl": ".",
         "esModuleInterop": true,
+        "allowImportingTsExtensions": true,
+        "noEmit": true,
         "paths": {
-            "@src": ["src"],
+            "@src/*": ["src/*"],
             "@environment": ["src/environment.d.ts"],
+            "@dictionaries": ["src/dictionaries.d.ts"],
             "@html": ["src/htmlFiles.d.ts"]
         }
     }

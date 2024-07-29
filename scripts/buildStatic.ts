@@ -9,7 +9,7 @@ import {
     ERROR,
     STATIC_FILES_DIR,
     BUILD_DIR_STATIC,
-} from "./common";
+} from "./common.ts";
 
 // Static Files Step
 // --------------------------------------------------------------------------------
