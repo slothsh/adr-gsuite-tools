@@ -17,8 +17,8 @@ export type Node = {
 } & { [k in Char]?: Node };
 
 export type TokenWithSource = {
-    token: string,
     source: string,
+    token?: string,
 };
 
 export class PrefixTree {
@@ -76,19 +76,104 @@ export class PrefixTree {
         return null;
     }
 
-    searchWordsAll(text: Array<string>): Array<string> {
+    searchAllWords(text: string, returnSource: boolean = false): Array<string> {
+        const allWords: Array<TokenWithSource> = text
+            .toLowerCase()
+            .split(" ")
+            .map((source) => {
+                const matches = source.match(/[A-z\-]+/);
+                if (matches === null || matches.length === 0) return { source: source };
+                return { source: source, token: matches[0].toLowerCase() };
+            });
+
         const matches: Array<string> = [];
 
-        for (const word of text) {
-            const match = this.searchWord(word);
+        for (const word of allWords) {
+            if (!word.token) { continue; }
+
+            const match = this.searchWord(word.token);
             if (match !== null) {
-                matches.push(match);
-            } else {
-                matches.push(word);
+                const sourceWordUniformMatch = word.source.match(/\b[A-z\-]+\b/);
+                const sourceWordUniform = (sourceWordUniformMatch !== null && sourceWordUniformMatch.length > 0)
+                    ? sourceWordUniformMatch[0]
+                    : word.source;
+
+                matches.push((returnSource) ? sourceWordUniform : match);
             }
         }
 
         return matches;
+    }
+
+    revealAllWords(text: string,
+                   placeholder: string = "_",
+                   returnSource: boolean = false): string {
+        const allWords: Array<TokenWithSource> = text
+            .toLowerCase()
+            .split(" ")
+            .map((source) => {
+                const matches = source.match(/[A-z\-]+/);
+                if (matches === null || matches.length === 0) return { source: source };
+                return { source: source, token: matches[0].toLowerCase() };
+            });
+
+        const matches: Array<string> = [];
+
+        for (const word of allWords) {
+            const sourceWordUniformMatch = word.source.match(/\b[A-z\-]+\b/);
+            const sourceWordUniform = (sourceWordUniformMatch !== null && sourceWordUniformMatch.length > 0)
+                ? sourceWordUniformMatch[0]
+                : word.source;
+
+            const placeholderText = word.source.replace(
+                /\b.+\b/,
+                placeholder.repeat(sourceWordUniform.length)
+            );
+
+            if (!word.token) {
+                matches.push(placeholderText);
+                continue;
+            }
+
+            const match = this.searchWord(word.token);
+            if (match !== null) {
+                const substituted = word.source.replace(/\b[A-z\-]+\b/, match);
+                matches.push((returnSource) ? word.source : substituted);
+            } else {
+                matches.push(placeholderText);
+            }
+        }
+
+        return matches.join(" ");
+    }
+
+    transposeText(text: string): string {
+        const allWords: Array<TokenWithSource> = text
+            .toLowerCase()
+            .split(" ")
+            .map((source) => {
+                const matches = source.match(/[A-z\-]+/);
+                if (matches === null || matches.length === 0) return { source: source };
+                return { source: source, token: matches[0].toLowerCase() };
+            });
+
+        const matches: Array<string> = [];
+        for (const word of allWords) {
+            if (!word.token) {
+                matches.push(word.source);
+                continue;
+            }
+
+            const match = this.searchWord(word.token);
+            if (match !== null) {
+                const substituted = word.source.replace(/\b[A-z\-]+\b/, match);
+                matches.push(substituted);
+            } else {
+                matches.push(word.source);
+            }
+        }
+
+        return matches.join(" ");
     }
 
     root: Node;

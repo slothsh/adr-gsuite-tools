@@ -93,8 +93,20 @@ try {
     console.log(INFO, `building client static word lists dictionary file "${clientStaticDataJsFile}"`);
     const usToUkWordListPath = resolve(DATA_DIR, "us-uk.json");
     const usToUkWordList: WordMapping = JSON.parse(readFileSync(usToUkWordListPath).toString());
-    const nodeRoot = PrefixTree.fromWords(usToUkWordList).root;
-    const jsSourceCode = `export const US_TO_UK = ${valueToString(nodeRoot)};\n`;
+    const uktoUsWordList = Object.fromEntries(
+        Object.entries(usToUkWordList)
+            .map(([key, value]) => {
+                return [value, key];
+            })
+    );
+
+    const nodeRootUsToUk = PrefixTree.fromWords(usToUkWordList).root;
+    const nodeRootUkToUs = PrefixTree.fromWords(uktoUsWordList).root;
+
+    let jsSourceCode = `export const US_TO_UK = ${valueToString(nodeRootUsToUk)};\n`;
+    jsSourceCode += `export const UK_TO_US = ${valueToString(nodeRootUkToUs)};\n`;
+    jsSourceCode += `export const LOCALE_PAIRS_MAPPING = { "en-us_en-gb": US_TO_UK, "en-gb_en-us": UK_TO_US };\n`;
+
     writeFileSync(clientStaticDataJsFile, await prettier.format(jsSourceCode, { parser: "babel" }));
 }
 
