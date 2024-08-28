@@ -7,6 +7,13 @@
 
 ___
 
+## 2024-08-28
+
+- [ ] [R] Extract library code into lib/ common directory
+- [ ] [R] Only application code inside of src/
+
+___
+
 ## 2024-07-04
 
 - [X] [B] Parse AST to inject TS code during development markdown template compilation
@@ -23,7 +30,7 @@ ___
 
 ## 2024-06-13
 
-- [ ] House-keeping: extract categories of common functions in build scripts
+- [X] House-keeping: extract categories of common functions in build scripts
 - [ ] De-duplicate build script functions/copied code
 - [ ] Configure tsconfig.json
 

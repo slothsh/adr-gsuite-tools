@@ -1,92 +1,20 @@
 // Copyright (c) 2024 Stefan Olivier
 // <https://stefanolivier.com>
 
-import { existsSync, writeFileSync } from "node:fs";
-import { resolve, basename } from "node:path";
 import esbuild from "esbuild";
 import fg from "fast-glob";
-import {
-    Config,
-    INFO,
-    ERROR,
-    BUILD_DIR_CACHE,
-    SRC_MARKDOWN_DIR,
-} from "./common.ts";
+import { BUILD_DIR_CACHE, SRC_MARKDOWN_DIR, } from "@common/paths.mts";
+import { Config } from "@common/config.mts";
+import { INFO, ERROR } from "@common/logging.mts";
+import { existsSync, writeFileSync } from "node:fs";
+import { resolve, basename } from "node:path";
+import { valueToString } from "@common/utilities.mts";
 
-// Reflection Helpers
-// --------------------------------------------------------------------------------
-
-function quoteString(value: string): string {
-    const stringValue = value as string;
-    const punctuator = (stringValue.includes(`"`))
-        ? (stringValue.includes("\n"))
-            ? "`"
-            : `'`
-        : `"`;
-
-    const escapedString = stringValue
-        .replace(/\\/gm, `\\\\`)
-        .replace(/"/gm, `\\"`)
-        .replace(/\n/gm, `\\n`);
-
-    return `${punctuator}${escapedString}${punctuator}`;
-}
-
-function stringToKeyString(value: string) {
-    const validKeyString = /^[_A-z]+[_A-z0-9]*$/.test(value);
-    if (validKeyString)
-        return quoteString(value);
-    else
-        return `[${quoteString(value)}]`;
-}
-
-function valueToString(value: any): string {
-    const typeOfValue = typeof value;
-
-    if (typeOfValue === "undefined") { return "undefined"; }
-
-    else if (typeOfValue === "boolean") { return value.toString(); }
-
-    else if (typeOfValue === "number") { return value.toString(); }
-
-    else if (typeOfValue === "bigint") { return value.toString() + "n"; }
-
-    else if (typeOfValue === "function") { return value.toString(); }
-
-    else if (typeOfValue === "string") {
-        return quoteString(value);
-    }
-
-    else if (typeOfValue === "object" && value === null) { return "null"; }
-
-    else if (typeOfValue === "object" && Array.isArray(value)) {
-        let arrayString = "";
-        for (const element of value as Array<any>) {
-            arrayString += valueToString(element) + ", ";
-        }
-
-        return `[${arrayString}]`;
-    }
-
-    else if (typeOfValue === "object") {
-        let arrayString = "";
-        const keys = Object.keys(value);
-
-        for (const k of keys) {
-            arrayString += `${stringToKeyString(k)}: ${valueToString(value[k])}, `
-        }
-
-        return `{${arrayString}}`;
-    }
-
-    return "undefined";
-}
-
-// --------------------------------------------------------------------------------
-
-
-// Client Config Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Client Config Step --
+//
+// -----------------------------------------------------------------------------
 
 const clientTsConfigFile = resolve(BUILD_DIR_CACHE, "clientConfig.ts");
 const clientJsConfigFile = resolve(BUILD_DIR_CACHE, "clientConfig.js");
@@ -157,8 +85,11 @@ catch (error: any) {
 // --------------------------------------------------------------------------------
 
 
-// Client HtmlFiles Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Client HtmlFiles Step --
+//
+// -----------------------------------------------------------------------------
 
 const clientTsHtmlFileNamesFile = resolve(BUILD_DIR_CACHE, "clientHtmlFiles.ts");
 const clientJsHtmlFileNamesFile = resolve(BUILD_DIR_CACHE, "clientHtmlFiles.js");

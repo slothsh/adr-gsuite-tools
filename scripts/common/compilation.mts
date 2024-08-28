@@ -1,141 +1,30 @@
-// Copyright (c) 2024 Stefan Olivier
-// <https://stefanolivier.com>
-
-import { existsSync, readFileSync, unlinkSync, writeFileSync, type PathLike, } from "node:fs";
-import { basename, dirname, resolve, join } from "node:path";
-import { execSync } from "node:child_process";
-import * as esbuild from "esbuild";
-import ts2gas from "ts2gas";
 import * as acorn from "acorn";
+import * as esbuild from "esbuild";
 import * as esc from "escodegen";
 import * as est from "estraverse";
-import tsc, { type CompilerOptions } from "typescript";
 import Handlebars from "handlebars";
-import { parse as parseHtml, Node as HtmlParserNode, HTMLElement as HtmlParserElement } from "node-html-parser";
-import { compile as compileSass } from "sass";
 import prettier from "prettier";
+import ts2gas from "ts2gas";
+import tsc, { type CompilerOptions } from "typescript";
+import { BUILD_DIR_CACHE, SRC_CSS_LOAD_PATHS } from "./paths.mts";
+import { BUILD_TIME_ALIASES } from "./aliases.mts";
+import { Config } from "./config.mts";
+import { Html } from "./utilities.mts";
 import { JSDOM } from "jsdom";
+import { Ok, Err } from "./logging.mts";
 import { PurgeCSS } from "purgecss";
-
-const baseDir = process.env.BASE_DIR || __dirname;
-
-// Environment & Configuration
-// --------------------------------------------------------------------------------
-
-export module Config {
-    export const ENVIRONMENT = process.env.ENVIRONMENT || "DEVELOPMENT";
-    export const PACKAGE_CONFIG_PATH = "package.json";
-    export const PACKAGE_CONFIG: { [key: string]: any } = JSON.parse(readFileSync(resolve(baseDir, PACKAGE_CONFIG_PATH), "utf-8"));
-    export const VERSION: string = PACKAGE_CONFIG["version"];
-    export const [VERSION_MAJOR, VERSION_MINOR, VERSION_SUB] = VERSION.split(".");
-    export const COMMIT_HASH: string = execSync("git rev-parse HEAD").toString().trim();
-    export const AUTHOR = PACKAGE_CONFIG["author"];
-    export const AUTHOR_EMAIL = PACKAGE_CONFIG["authorEmail"];
-    export const AUTHOR_WEBSITE = PACKAGE_CONFIG["authorWebsite"];
-    export const PROJECT_NAME = PACKAGE_CONFIG["name"];
-    export const PROJECT_DESCRIPTION = PACKAGE_CONFIG["description"];
-
-    export const LICENSE_FILE_PATH = "LICENSE";
-    export const LICENSE = readFileSync(LICENSE_FILE_PATH, "utf-8")
-        .toString()
-        .trim();
-
-    export const LICENSE_TYPE = PACKAGE_CONFIG["license"];
-
-    export const DEVELOPMENT_HOST_URL: string = "http://localhost";
-    export const DEVELOPMENT_HOST_PORT: number = 8888;
-    export const DEVELOPMENT_MARKDOWN_PATH: string = "markdown";
-}
-
-// --------------------------------------------------------------------------------
+import { Result } from "./logging.mts";
+import { basename, dirname, resolve } from "node:path";
+import { compile as compileSass } from "sass";
+import { parse as parseHtml, HTMLElement as HtmlParserElement } from "node-html-parser";
+import { type PathLike, existsSync, readFileSync, writeFileSync, } from "node:fs";
 
 
-// Project Paths
-// --------------------------------------------------------------------------------
-
-export const BASE_DIR = resolve(baseDir);
-export const SRC_DIR = resolve(baseDir, "src");
-export const BUILD_DIR = resolve(baseDir, "build");
-export const SCRIPTS_DIR = resolve(baseDir, "scripts");
-export const STATIC_FILES_DIR = resolve(baseDir, "static");
-export const DATA_DIR = resolve(baseDir, "data");
-export const TSCONFIG_PATH = resolve(baseDir, "tsconfig.json");
-
-export const SRC_LIBRARY_DIR = resolve(SRC_DIR, "library");
-export const SRC_MARKDOWN_DIR = resolve(SRC_DIR, "markdown");
-export const SRC_DEVELOPMENT_DIR = resolve(SRC_DIR, "development");
-export const SRC_CSS_LOAD_PATHS = [SRC_MARKDOWN_DIR, resolve(baseDir, "node_modules/bootstrap/scss")];
-export const SCRIPTS_CONFIG_DIR = resolve(SCRIPTS_DIR, "configs");
-export const BUILD_DIR_LIBRARY = resolve(BUILD_DIR, "library");
-export const BUILD_DIR_MARKDOWN = resolve(BUILD_DIR, "markdown");
-export const BUILD_DIR_STATIC = resolve(BUILD_DIR, "static");
-export const BUILD_DIR_CACHE = resolve(BUILD_DIR, "cache");
-export const BUILD_DIR_DEVELOPMENT = resolve(BUILD_DIR, "development");
-export const BUILD_DIR_ENVIRONEMNT = resolve(BUILD_DIR, "environment");
-export const DIST_DIR = resolve(BUILD_DIR, "dist");
-
-const buildTimeAliases = {
-    name: 'build-time-aliases',
-    setup(build: any) {
-        build.onResolve({ filter: /^@environment$/ }, (args: any) => {
-            return { path: resolve(BUILD_DIR_CACHE, "clientConfig.js") }
-        });
-
-        build.onResolve({ filter: /^@html$/ }, (args: any) => {
-            return { path: resolve(BUILD_DIR_CACHE, "clientHtmlFiles.js") }
-        });
-
-        build.onResolve({ filter: /^@dictionaries$/ }, (args: any) => {
-            return { path: resolve(BUILD_DIR_CACHE, "clientStaticData.js") }
-        });
-    },
-}
-
-// --------------------------------------------------------------------------------
-
-
-// Utilities
-// --------------------------------------------------------------------------------
-
-export const ERROR = "[ERROR]";
-export const WARN = "[WARN]";
-export const INFO = "[INFO]";
-
-export const enum ResultKind {
-    OK,
-    ERROR,
-}
-
-export class Result {
-    constructor(kind: ResultKind, message?: string) {
-        this.kind = kind;
-        if (message)
-            this.message = message;
-    }
-
-    kind: ResultKind;
-    message: string = "";
-
-    success(): boolean {
-        return this.kind === ResultKind.OK;
-    }
-    
-    error(): boolean {
-        return this.kind === ResultKind.ERROR;
-    }
-
-    context(): string {
-        return this.message;
-    }
-}
-
-export function Ok(message?: string) {
-    return new Result(ResultKind.OK, message ?? "");
-}
-
-export function Err(message: string) {
-    return new Result(ResultKind.ERROR, message);
-}
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Compilation Default Options --
+//
+// -----------------------------------------------------------------------------
 
 export const GAS_BUNDLE_BUILD_OPTIONS: esbuild.BuildOptions = {
     format: "esm",
@@ -148,19 +37,28 @@ export const MARKDOWN_BUNDLE_BUILD_OPTIONS: esbuild.BuildOptions = {
     bundle: true,
     treeShaking: false,
     plugins: [
-        buildTimeAliases,
+        BUILD_TIME_ALIASES,
     ],
 };
 
-export enum CssPreprocessorKind {
-    CSS = "css",
-    SCSS = "scss",
-}
+// -----------------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Compilation Types --
+//
+// -----------------------------------------------------------------------------
 
 export interface OutputFile {
     name: string,
     extension: string,
     directory: PathLike,
+}
+
+export enum CssPreprocessorKind {
+    CSS = "css",
+    SCSS = "scss",
 }
 
 export interface CompilationUnit {
@@ -180,8 +78,7 @@ export interface TsCompilationUnit extends CompilationUnit {
     cachedFile?: PathLike,
 }
 
-export interface CssCompilationUnit extends CompilationUnit {
-}
+export interface CssCompilationUnit extends CompilationUnit {}
 
 export interface MarkdownCompilationUnit extends CompilationUnit {
     markdownScript?: TsCompilationUnit,
@@ -196,249 +93,14 @@ export type CompilationTransformer =
     ((unit: CssCompilationUnit) => Result) &
     ((unit: MarkdownCompilationUnit) => Result)
 
-
-namespace Html {
-    export function findNodeTag(tag: string, root: HtmlParserElement): HtmlParserElement | null {
-        if (root.rawTagName === tag)
-            return root;
-
-        let bodyTag: HtmlParserElement | null = null;
-        for (const child of root.childNodes) {
-            bodyTag = findNodeTag(tag, child as HtmlParserElement);
-            if (bodyTag !== null)
-                break;
-        }
-
-        return bodyTag;
-    }
-}
-
-export function getNodes(root: acorn.Statement | acorn.ModuleDeclaration, collect: Array<acorn.Node> = []): Array<acorn.Node> {
-    if (getClassName(root) === "Node") {
-        collect.push(root);
-    }
-
-    const keys = Object.keys(root);
-    for (const k of keys) {
-        if (getClassName(root[k]) === "Node") {
-            collect = [...collect, ...getNodes(root[k])];
-        }
-
-        if (isIterable(root[k]) && typeof root[k] !== "string") {
-            for (const i of root[k]) {
-                collect = [...collect, ...getNodes(i)];
-            }
-        }
-    }
-
-    return [...collect];
-}
-
-export function isIterable(obj: any) {
-  return obj != null && typeof obj[Symbol.iterator] === "function";
-}
-
-export function getClassName(obj: any) {
-  if (obj != null && typeof obj.constructor === "function") {
-    return obj.constructor.name;
-  }
-
-  return null;
-}
-
-export function replaceSubstring(str: string, start: number, end: number, replacement: string): string {
-    let before = str.substring(0, Math.max(0, start));
-    let after = str.substring(Math.min(str.length, end + 1));
-    return before + replacement + after;
-}
-
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 
-// Handlerbars Configuration
-// --------------------------------------------------------------------------------
-
-type HandlebarsOptionsHash = { hash: { [key: string]: string }};
-type HandlebarsOptions = HandlebarsOptionsHash & { [key: PropertyKey]: any };
-
-class HandlebarsHelper {
-    constructor(name: string, procedure: Handlebars.HelperDelegate) {
-        this.name = name;
-        this.procedure = procedure;
-    }
-    readonly name: string;
-    readonly procedure: Handlebars.HelperDelegate;
-}
-
-function createHelper(name: string, procedure: Handlebars.HelperDelegate): HandlebarsHelper {
-    return new HandlebarsHelper(name, procedure);
-}
-
-function inlineScript(path: PathLike): string {
-    const sourceCodeFile = resolve(BASE_DIR, path.toString());
-    if (existsSync(sourceCodeFile)) {
-        const sourceCode = readFileSync(sourceCodeFile, "utf-8").toString();
-        return `<script type="text/javascript">${sourceCode}</script>`;
-    }
-
-    return "";
-}
-
-function inlineSvgIcon(path: PathLike, width: number, height: number, options: HandlebarsOptions): string {
-    const svgSourcePath = resolve(BASE_DIR, path.toString());
-
-    if (existsSync(svgSourcePath)) {
-        const svgSourceCode = readFileSync(svgSourcePath, "utf-8").toString();
-
-        const svgMarkup = parseHtml(svgSourceCode);
-        const svgNode = Html.findNodeTag("svg", svgMarkup);
-        if (svgNode === null) {
-            throw new Error(`could not find svg node for file @ "${svgSourcePath}" during inline svg icon helper`);
-        }
-
-        const svgWidthAttribute = svgNode.getAttribute("width");
-        const svgHeightAttribute = svgNode.getAttribute("height");
-        if (!svgWidthAttribute || !svgHeightAttribute) {
-            throw new Error(`could not find width and/or height attribute on svg node in file @ "${svgSourcePath}"`);
-        }
-
-        const svgWidth = parseFloat(svgWidthAttribute);
-        const svgHeight = parseFloat(svgHeightAttribute);
-        const scaleX = width/svgWidth;
-        const scaleY = height/svgHeight;
-        const geometricScale = Math.sqrt(scaleX * scaleY);
-
-        const sizingAttributesList: Array<string> = [
-            "width",
-            "height",
-            "viewBox",
-            "x",
-            "y",
-            "rx",
-            "ry",
-            "r",
-            "cx",
-            "cy",
-            "dx",
-            "dy",
-            "d",
-            "points",
-            "x1",
-            "y1",
-            "x2",
-            "y2",
-            "markerWidth",
-            "markerHeight",
-            "stroke-width",
-            "stroke-height",
-        ];
-
-        const scaleAttributeNumber = (nodeAttribute: string, scaleFactor: number) => {
-            // @ts-ignore
-            const numbersPart = [...nodeAttribute.matchAll(/-?\d+(\.\d+)?/g)];
-
-            let newNodeAttribute = nodeAttribute;
-            let offset = 0;
-
-            for (const part of numbersPart as Array<RegExpExecArray>) {
-                const start = part.index;
-                const end = start + part[0].length;
-
-                const scaledNodeWidth = (parseFloat(part[0]) * scaleFactor).toString();
-                newNodeAttribute = replaceSubstring(newNodeAttribute, start + offset, end + offset - 1, scaledNodeWidth);
-                offset += newNodeAttribute.length - nodeAttribute.length;
-            }
-
-            return newNodeAttribute;
-        }
-
-        for (const attribute of sizingAttributesList) {
-            const sizedNodes = svgMarkup.querySelectorAll(`[${attribute}]`);
-            for (const node of sizedNodes) {
-                switch (attribute) {
-                    // Horizontal
-                    case "x":
-                    case "rx":
-                    case "cx":
-                    case "dx":
-                    case "x1":
-                    case "x2":
-                    case "markerWidth":
-                    case "stroke-width":
-                    case "width":
-                    case "y":
-                    case "ry":
-                    case "r":
-                    case "cy":
-                    case "dy":
-                    case "y1":
-                    case "y2":
-                    case "markerHeight":
-                    case "stroke-height":
-                    case "height": {
-                        const nodeAttribute = node.getAttribute(attribute);
-                        node.setAttribute(attribute, scaleAttributeNumber(nodeAttribute, geometricScale));
-                    } break;
-
-                    case "points":
-                    case "viewBox":
-                    case "d": {
-                        const nodeAttribute = node.getAttribute(attribute);
-                        const commands: Array<string> = nodeAttribute.split(" ");
-                        commands.forEach((value: string) => {
-                            value.trim();
-                        });
-
-                        const scaledCommands: Array<string> = [];
-                        for (const c of commands) {
-                            const scaledCommand = scaleAttributeNumber(c, geometricScale);
-                            scaledCommands.push(scaledCommand);
-                        }
-
-                        const scaledNodeAttribute = scaledCommands.join(" ");
-                        node.setAttribute(attribute, scaledNodeAttribute);
-                    } break;
-                    default: throw new Error("unreachable");
-                }
-            }
-        }
-
-        svgNode.removeAttribute("viewBox");
-
-        for (const [ key, value ] of Object.entries(options.hash)) {
-            svgNode.setAttribute(new Handlebars.SafeString(key).toString(), new Handlebars.SafeString(value).toString());
-        }
-
-        return svgNode.toString();
-    }
-
-    return "";
-}
-
-export function initializeHandlebars(): Result {
-    try {
-        const handlebarsHelpers: Array<HandlebarsHelper> = [
-            createHelper("inline-script", inlineScript),
-            createHelper("inline-svg-icon", inlineSvgIcon),
-        ];
-
-        for (const helper of handlebarsHelpers) {
-            Handlebars.registerHelper(helper.name, helper.procedure);
-        }
-    } 
-
-    catch (error: any) {
-        return Err(`handlebars initialization failed with error: ${error}`);
-    }
-
-    return Ok();
-}
-
-// --------------------------------------------------------------------------------
-
-
-// Procedures
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Compilation Routines --
+//
+// -----------------------------------------------------------------------------
 
 export function scriptsForMarkownTemplate(unit: MarkdownCompilationUnit): Result {
     try {
@@ -580,7 +242,7 @@ export async function compileGasBundle(unit: TsCompilationUnit): Promise<Result>
             entryPoints: [unit.file.toString()],
             outfile: interimFile,
             plugins: [
-                buildTimeAliases,
+                BUILD_TIME_ALIASES,
             ],
             ...unit.buildOptions ?? {
                 format: "esm",
@@ -643,7 +305,7 @@ export async function compileMarkdownTemplate(unit: MarkdownCompilationUnit): Pr
                 bundle: true,
                 treeShaking: false,
                 plugins: [
-                    buildTimeAliases,
+                    BUILD_TIME_ALIASES,
                 ]
             };
 
@@ -849,4 +511,4 @@ export async function prettyHtml(unit: MarkdownCompilationUnit): Promise<Result>
     return Ok();
 }
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------

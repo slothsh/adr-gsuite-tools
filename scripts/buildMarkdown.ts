@@ -1,14 +1,13 @@
 // Copyright (c) 2024 Stefan Olivier
 // <https://stefanolivier.com>
 
-import { readFileSync } from "node:fs";
-import { basename, resolve } from "node:path";
 import fg from "fast-glob";
+import { INFO, ERROR } from "@common/logging.mts";
+import { SRC_MARKDOWN_DIR, BUILD_DIR_MARKDOWN } from "@common/paths.mts";
+import { basename, resolve } from "node:path";
+import { initializeHandlebars } from "@common/handlebars.mts";
+import { readFileSync } from "node:fs";
 import {
-    INFO,
-    ERROR,
-    SRC_MARKDOWN_DIR,
-    BUILD_DIR_MARKDOWN,
     writeCompilationUnit,
     compileMarkdownTemplate,
     injectMarkdownCss,
@@ -17,9 +16,8 @@ import {
     scriptsForMarkownTemplate,
     stylesForMarkdownTemplate,
     prettyHtml,
-    initializeHandlebars,
     type MarkdownCompilationUnit,
-} from "./common.ts";
+} from "@common/compilation.mts";
 
 // Markdown Templates Step
 // --------------------------------------------------------------------------------
@@ -29,6 +27,7 @@ export const markupSourceFilePaths = fg.sync([
     resolve(SRC_MARKDOWN_DIR, "**/*.html"),
 ]);
 
+// @ts-ignore
 const compilationUnits: Array<MarkdownCompilationUnit> = markupSourceFilePaths
     .map((sourceFile: string) => {
         const sourceCode = readFileSync(sourceFile, "utf-8").toString();
@@ -67,8 +66,11 @@ const compilationUnits: Array<MarkdownCompilationUnit> = markupSourceFilePaths
 // --------------------------------------------------------------------------------
 
 
-// Build Initialization
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Build Initialization --
+//
+// -----------------------------------------------------------------------------
 
 {
     const result = initializeHandlebars();
@@ -81,8 +83,11 @@ const compilationUnits: Array<MarkdownCompilationUnit> = markupSourceFilePaths
 // --------------------------------------------------------------------------------
 
 
-// Pre-Compilation Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Pre-Compilation Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     if (unit.preCompile) {
@@ -100,8 +105,11 @@ for (const unit of compilationUnits) {
 // --------------------------------------------------------------------------------
 
 
-// Markdown Style Sheet Compilation Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Markdown Style Sheet Compilation Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     if (unit.markdownStyles!) {
@@ -143,8 +151,11 @@ for (const unit of compilationUnits) {
 // --------------------------------------------------------------------------------
 
 
-// Markdown Script Compilation Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Markdown Script Compilation Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     if (unit.markdownScript!.preCompile) {
@@ -182,8 +193,11 @@ for (const unit of compilationUnits) {
 // --------------------------------------------------------------------------------
 
 
-// Compilation Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Compilation Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     for (const [compile, context] of unit.compile) {
@@ -199,8 +213,11 @@ for (const unit of compilationUnits) {
 // --------------------------------------------------------------------------------
 
 
-// Post-Compilation Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Post-Compilation Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     if (unit.postCompile) {
@@ -218,8 +235,11 @@ for (const unit of compilationUnits) {
 // --------------------------------------------------------------------------------
 
 
-// Write Output Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Write Output Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     for (const outputItem of unit.output) {

@@ -1,18 +1,14 @@
-// Copyright (c) 2024 Stefan Olivier
-// <https://stefanolivier.com>
-
-import { copyFileSync, readFileSync } from "node:fs";
-import { basename, resolve } from "node:path";
 import fg from "fast-glob";
-import {
-    INFO,
-    ERROR,
-    STATIC_FILES_DIR,
-    BUILD_DIR_STATIC,
-} from "./common.ts";
+import { INFO, ERROR } from "@common/logging.mts";
+import { STATIC_FILES_DIR, BUILD_DIR_STATIC, } from "@common/paths.mts";
+import { basename, resolve } from "node:path";
+import { copyFileSync } from "node:fs";
 
-// Static Files Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Static Files Step --
+//
+// -----------------------------------------------------------------------------
 
 const staticFiles = fg.sync(resolve(STATIC_FILES_DIR, "**/*"));
 

@@ -2,6 +2,10 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "module": "nodenext",
-        "moduleResolution": "nodenext"
+        "moduleResolution": "nodenext",
+        "paths": {
+            "@common/*": ["scripts/common/*"],
+            "@src/*": ["src/*"]
+        }
     }
 }

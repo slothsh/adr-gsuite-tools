@@ -1,24 +1,15 @@
 // Copyright (c) 2024 Stefan Olivier
 // <https://stefanolivier.com>
 
-import { type PathLike, existsSync, mkdirSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import Handlebars from "handlebars";
-import {
-    BASE_DIR,
-    INFO,
-    ERROR,
-    BUILD_DIR,
-    DIST_DIR,
-    BUILD_DIR_LIBRARY,
-    BUILD_DIR_MARKDOWN,
-    BUILD_DIR_STATIC,
-    BUILD_DIR_DEVELOPMENT,
-    BUILD_DIR_CACHE,
-} from "./common.ts";
+import { BUILD_DIR, DIST_DIR, BUILD_DIR_LIBRARY, BUILD_DIR_MARKDOWN, BUILD_DIR_STATIC, BUILD_DIR_DEVELOPMENT, BUILD_DIR_CACHE, } from "@common/paths.mts";
+import { INFO, ERROR } from "@common/logging.mts";
+import { existsSync, mkdirSync } from "node:fs";
 
-// Configure Directories
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Configure Build --
+//
+// -----------------------------------------------------------------------------
 
 const directories = [
     BUILD_DIR,

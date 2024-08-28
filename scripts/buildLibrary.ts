@@ -1,23 +1,15 @@
-// Copyright (c) 2024 Stefan Olivier
-// <https://stefanolivier.com>
-
-import { readFileSync } from "node:fs";
-import { basename, resolve } from "node:path";
 import fg from "fast-glob";
-import {
-    INFO,
-    ERROR,
-    SRC_LIBRARY_DIR,
-    BUILD_DIR_LIBRARY,
-    compileGasBundle,
-    compileGas,
-    injectLicense,
-    writeCompilationUnit,
-    type TsCompilationUnit,
-} from "./common.ts";
+import { INFO, ERROR } from "@common/logging.mts";
+import { SRC_LIBRARY_DIR, BUILD_DIR_LIBRARY, } from "@common/paths.mts";
+import { basename, resolve } from "node:path";
+import { compileGasBundle, compileGas, injectLicense, writeCompilationUnit, type TsCompilationUnit } from "@common/compilation.mts";
+import { readFileSync } from "node:fs";
 
-// Compilation Units
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Compilation Units --
+//
+// -----------------------------------------------------------------------------
 
 const compilationUnits: Array<TsCompilationUnit> = fg.sync(resolve(SRC_LIBRARY_DIR, "**/*.ts"))
     .map((sourceFile: string) => {
@@ -50,8 +42,11 @@ const compilationUnits: Array<TsCompilationUnit> = fg.sync(resolve(SRC_LIBRARY_D
 // --------------------------------------------------------------------------------
 
 
-// Pre-Compilation Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Pre-Compilation Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     if (unit.preCompile) {
@@ -69,8 +64,11 @@ for (const unit of compilationUnits) {
 // --------------------------------------------------------------------------------
 
 
-// Compilation Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Compilation Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     for (const [compile, context] of unit.compile) {
@@ -86,8 +84,11 @@ for (const unit of compilationUnits) {
 // --------------------------------------------------------------------------------
 
 
-// Post-Compilation Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Post Compilation Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     if (unit.postCompile) {
@@ -105,8 +106,11 @@ for (const unit of compilationUnits) {
 // --------------------------------------------------------------------------------
 
 
-// Write Output Step
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+//
+// -- @SECTION Output Step --
+//
+// -----------------------------------------------------------------------------
 
 for (const unit of compilationUnits) {
     for (const outputItem of unit.output) {
