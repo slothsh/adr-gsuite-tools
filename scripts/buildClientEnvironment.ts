@@ -67,6 +67,7 @@ try {
             format: "esm",
             bundle: true,
             treeShaking: false,
+            logLevel: "silent",
         };
 
         console.log(INFO, `writing client config file "${clientJsConfigFile}"`);
@@ -120,6 +121,7 @@ try {
             format: "esm",
             bundle: true,
             treeShaking: false,
+            logLevel: "silent",
         };
 
         console.log(INFO, `writing client HTML file names file "${clientJsHtmlFileNamesFile}"`);

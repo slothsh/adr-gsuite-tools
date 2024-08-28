@@ -30,12 +30,14 @@ export const GAS_BUNDLE_BUILD_OPTIONS: esbuild.BuildOptions = {
     format: "esm",
     bundle: true,
     treeShaking: false,
+    logLevel: "silent",
 };
 
 export const MARKDOWN_BUNDLE_BUILD_OPTIONS: esbuild.BuildOptions = {
     format: "esm",
     bundle: true,
     treeShaking: false,
+    logLevel: "silent",
     plugins: [
         BUILD_TIME_ALIASES,
     ],
@@ -184,6 +186,7 @@ export async function compileTsBundle(unit: TsCompilationUnit): Promise<Result> 
         const buildOptions: esbuild.BuildOptions = {
             entryPoints: [unit.file.toString()],
             outfile: interimFile,
+            logLevel: "silent",
             ...unit.buildOptions ?? {
                 format: "esm",
                 bundle: true,
@@ -241,6 +244,7 @@ export async function compileGasBundle(unit: TsCompilationUnit): Promise<Result>
         const buildOptions: esbuild.BuildOptions = {
             entryPoints: [unit.file.toString()],
             outfile: interimFile,
+            logLevel: "silent",
             plugins: [
                 BUILD_TIME_ALIASES,
             ],
@@ -303,6 +307,7 @@ export async function compileMarkdownTemplate(unit: MarkdownCompilationUnit): Pr
                 outfile: interimFile,
                 format: "iife",
                 bundle: true,
+                logLevel: "silent",
                 treeShaking: false,
                 plugins: [
                     BUILD_TIME_ALIASES,
