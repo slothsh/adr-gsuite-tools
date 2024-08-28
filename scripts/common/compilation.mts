@@ -11,7 +11,7 @@ import { BUILD_TIME_ALIASES } from "./aliases.mts";
 import { Config } from "./config.mts";
 import { Html } from "./utilities.mts";
 import { JSDOM } from "jsdom";
-import { Ok, Err } from "./logging.mts";
+import { INFO, ERROR, Ok, Err } from "./logging.mts";
 import { PurgeCSS } from "purgecss";
 import { Result } from "./logging.mts";
 import { basename, dirname, resolve } from "node:path";
@@ -91,9 +91,9 @@ export interface MarkdownCompilationUnit extends CompilationUnit {
 }
 
 export type CompilationTransformer =
-    ((unit: CompilationUnit) => Result) &
-    ((unit: CssCompilationUnit) => Result) &
-    ((unit: MarkdownCompilationUnit) => Result)
+    ((unit: CompilationUnit) => Promise<Result>) &
+    ((unit: CssCompilationUnit) => Promise<Result>) &
+    ((unit: MarkdownCompilationUnit) => Promise<Result>)
 
 // -----------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@ export type CompilationTransformer =
 //
 // -----------------------------------------------------------------------------
 
-export function scriptsForMarkownTemplate(unit: MarkdownCompilationUnit): Result {
+export async function scriptsForMarkownTemplate(unit: MarkdownCompilationUnit): Promise<Result> {
     try {
         const sourceFile = resolve(dirname(unit.file.toString()), `${basename(unit.file.toString(), ".html")}.ts`);
         if (!existsSync(sourceFile)) {
@@ -122,7 +122,6 @@ export function scriptsForMarkownTemplate(unit: MarkdownCompilationUnit): Result
             buildOptions: MARKDOWN_BUNDLE_BUILD_OPTIONS,
 
             compile: [
-                // @ts-ignore
                 [compileTsBundle, `compiling typescript bundle: "${sourceFile}"`],
             ],
         };
@@ -135,7 +134,7 @@ export function scriptsForMarkownTemplate(unit: MarkdownCompilationUnit): Result
     return Ok();
 }
 
-export function stylesForMarkdownTemplate(unit: MarkdownCompilationUnit): Result {
+export async function stylesForMarkdownTemplate(unit: MarkdownCompilationUnit): Promise<Result> {
     try {
         const stylesheetKinds = Object.values(CssPreprocessorKind)
             .filter(variant => typeof variant === "string");
@@ -211,7 +210,7 @@ export async function compileTsBundle(unit: TsCompilationUnit): Promise<Result> 
     return Ok();
 }
 
-export function compileCssBundle(unit: CssCompilationUnit): Result {
+export async function compileCssBundle(unit: CssCompilationUnit): Promise<Result> {
     try {
         switch (unit.extension) {
             case CssPreprocessorKind.CSS:  {
@@ -273,7 +272,7 @@ export async function compileGasBundle(unit: TsCompilationUnit): Promise<Result>
     return Ok();
 }
 
-export function compileGas(unit: TsCompilationUnit): Result {
+export async function compileGas(unit: TsCompilationUnit): Promise<Result> {
     const transpilationCompilerOptions: CompilerOptions = unit.transpileOptions ?? {
         allowJS: true,
         strict: true,
@@ -314,7 +313,6 @@ export async function compileMarkdownTemplate(unit: MarkdownCompilationUnit): Pr
                 ]
             };
 
-            // @ts-ignore
             await esbuild.build(buildOptions);
 
             if (existsSync(interimFile)) {
@@ -418,7 +416,7 @@ export async function purgeMarkdownCss(unit: MarkdownCompilationUnit): Promise<R
     return Ok();
 }
 
-export function injectMarkdownCss(unit: MarkdownCompilationUnit): Result {
+export async function injectMarkdownCss(unit: MarkdownCompilationUnit): Promise<Result> {
     try {
         if (unit.markdownStyles) {
             const html = parseHtml(unit.compiledSource);
@@ -441,7 +439,7 @@ export function injectMarkdownCss(unit: MarkdownCompilationUnit): Result {
     return Ok();
 }
 
-export function injectMarkdownJs(unit: MarkdownCompilationUnit): Result {
+export async function injectMarkdownJs(unit: MarkdownCompilationUnit): Promise<Result> {
     try {
         // TODO:
         if (unit.markdownScript) {
@@ -463,7 +461,7 @@ export function injectMarkdownJs(unit: MarkdownCompilationUnit): Result {
     return Ok();
 }
 
-export function injectLicense(unit: CompilationUnit): Result {
+export async function injectLicense(unit: CompilationUnit): Promise<Result> {
     try {
         let initiator = "", terminator = "";
 
@@ -487,7 +485,7 @@ export function injectLicense(unit: CompilationUnit): Result {
     return Ok();
 }
 
-export function writeCompilationUnit(unit: CompilationUnit, outputFile: PathLike): Result {
+export async function writeCompilationUnit(unit: CompilationUnit, outputFile: PathLike): Promise<Result> {
     try {
         writeFileSync(outputFile, unit.compiledSource);
     }

@@ -9,7 +9,8 @@ import { resolve } from "node:path";
 //
 // -----------------------------------------------------------------------------
 
-export module Config { export const ENVIRONMENT = process.env.ENVIRONMENT || "DEVELOPMENT";
+export module Config {
+    export const ENVIRONMENT = process.env.ENVIRONMENT || "DEVELOPMENT";
     export const PACKAGE_CONFIG_PATH = "package.json";
     export const PACKAGE_CONFIG: { [key: string]: any } = JSON.parse(readFileSync(resolve(BASE_DIR, PACKAGE_CONFIG_PATH), "utf-8"));
     export const VERSION: string = PACKAGE_CONFIG["version"];

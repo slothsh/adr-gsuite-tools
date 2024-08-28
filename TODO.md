@@ -11,6 +11,12 @@ ___
 
 - [ ] [R] Extract library code into lib/ common directory
 - [ ] [R] Only application code inside of src/
+- [X] [R] Segment builds into script modules
+- [ ] [R] Namespace build scripts/helpers
+- [ ] [R] Remove globals from common build helpers
+- [ ] [R] Factor out inlined dictionary data file paths to common paths for run-time static data build
+- [ ] [R] Better build diagnostic messages
+- [ ] [R] Incorporate stat command to check if rebuilds are required for certain files 
 
 ___
 
@@ -31,7 +37,7 @@ ___
 ## 2024-06-13
 
 - [X] House-keeping: extract categories of common functions in build scripts
-- [ ] De-duplicate build script functions/copied code
-- [ ] Configure tsconfig.json
+- [X] De-duplicate build script functions/copied code
+- [X] Configure tsconfig.json
 
 ___

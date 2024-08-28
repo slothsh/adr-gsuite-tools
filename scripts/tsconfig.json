@@ -4,8 +4,9 @@
         "module": "nodenext",
         "moduleResolution": "nodenext",
         "paths": {
+            "@src/*": ["src/*"],
             "@common/*": ["scripts/common/*"],
-            "@src/*": ["src/*"]
+            "@gsheetsaddon/*": ["gsheets-addon/*"]
         }
     }
 }

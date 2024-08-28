@@ -125,7 +125,6 @@ function inlineSvgIcon(path: PathLike, width: number, height: number, options: H
         ];
 
         const scaleAttributeNumber = (nodeAttribute: string, scaleFactor: number) => {
-            // @ts-ignore
             const numbersPart = [...nodeAttribute.matchAll(/-?\d+(\.\d+)?/g)];
 
             let newNodeAttribute = nodeAttribute;
