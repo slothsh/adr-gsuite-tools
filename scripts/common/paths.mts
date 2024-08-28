@@ -27,5 +27,5 @@ export const BUILD_DIR_DEVELOPMENT = resolve(BUILD_DIR, "development");
 export const BUILD_DIR_ENVIRONEMNT = resolve(BUILD_DIR, "environment");
 export const DIST_DIR = resolve(BUILD_DIR, "dist");
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
