@@ -7,8 +7,10 @@
     "authorWebsite": "https://stefanolivier.com",
     "scripts": {
         "configure": "mkdir -p build",
-        "build": "npm run configure && npx esbuild --log-level=silent --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/buildGsheetsAddon.js ./scripts/gsheets-addon/build.mts && BASE_DIR=. node ./build/buildGsheetsAddon.js",
-        "serve": "ENVIRONMENT=DEVELOPMENT npm run build && esbuild --log-level=silent --serve=localhost:8888 --servedir=./build/development",
+        "build": "npm run configure && npx esbuild --log-level=silent --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/buildGsheetsAddon.js ./scripts/gsheets-addon/build.mts && BASE_DIR=. ENVIRONMENT=PRODUCTION node ./build/buildGsheetsAddon.js",
+        "dev": "npm run configure && npx esbuild --log-level=silent --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/buildGsheetsAddon.js ./scripts/gsheets-addon/build.mts && BASE_DIR=. ENVIRONMENT=DEVELOPMENT node ./build/buildGsheetsAddon.js",
+        "serve": "npm run dev && esbuild --log-level=silent --serve=localhost:8888 --servedir=./build/development",
+        "website": "npm run configure && npx esbuild --log-level=silent --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/buildWebsite.js ./scripts/website/build.mts && BASE_DIR=. node ./build/buildWebsite.js",
         "clean": "rm -rf ./build"
     },
     "keywords": [],
