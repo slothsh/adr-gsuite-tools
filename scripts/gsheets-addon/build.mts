@@ -29,7 +29,7 @@ try {
 
     fail_on_error(await buildStatic());
     fail_on_error(await assemble());
-} catch (error) {
+} catch (error: any) {
     console.error(ERROR, error);
 }
 

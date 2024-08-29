@@ -38,7 +38,7 @@ export function getDocumentValue(key: string): string | null {
         return value;
     }
 
-    catch (error) {
+    catch (error: any) {
         // TODO: implement error result
         return null;
     }

@@ -10,12 +10,13 @@ import { BUILD_DIR_CACHE, SRC_CSS_LOAD_PATHS } from "./paths.mts";
 import { BUILD_TIME_ALIASES } from "./aliases.mts";
 import { Config } from "./config.mts";
 import { Html } from "./utilities.mts";
+import { Ok, Err, ERROR } from "./logging.mts";
 import { JSDOM } from "jsdom";
-import { INFO, ERROR, Ok, Err } from "./logging.mts";
 import { PurgeCSS } from "purgecss";
 import { Result } from "./logging.mts";
 import { basename, dirname, resolve } from "node:path";
 import { compile as compileSass } from "sass";
+import { hash } from "node:crypto";
 import { parse as parseHtml, HTMLElement as HtmlParserElement } from "node-html-parser";
 import { type PathLike, existsSync, readFileSync, writeFileSync, } from "node:fs";
 
@@ -181,7 +182,7 @@ export async function stylesForMarkdownTemplate(unit: MarkdownCompilationUnit): 
 
 export async function compileTsBundle(unit: TsCompilationUnit): Promise<Result> {
     try {
-        const interimFile = `${BUILD_DIR_CACHE}/${basename(unit.file.toString(), "." + unit.extension)}.js`
+        const interimFile = `${BUILD_DIR_CACHE}/${basename(unit.file.toString(), "." + unit.extension)}-${hash("md5", unit.file.toString())}.js`
         const buildOptions: esbuild.BuildOptions = {
             entryPoints: [unit.file.toString()],
             outfile: interimFile,
@@ -300,7 +301,8 @@ export async function compileMarkdownTemplate(unit: MarkdownCompilationUnit): Pr
 
         if (unit.markdownScript && unit.markdownScript.cachedFile) {
             const markdownSourceFile = unit.markdownScript.file.toString();
-            const interimFile = resolve(BUILD_DIR_CACHE, `${basename(markdownSourceFile, "." + unit.markdownScript.extension)}Dom.js`);
+            const interimFileName = `dom-${basename(markdownSourceFile, "." + unit.markdownScript.extension)}`;
+            const interimFile = resolve(BUILD_DIR_CACHE, `${interimFileName}-${hash("md5", markdownSourceFile)}.js`);
             const buildOptions: esbuild.BuildOptions = {
                 entryPoints: [markdownSourceFile],
                 outfile: interimFile,
@@ -349,7 +351,7 @@ export async function compileMarkdownTemplate(unit: MarkdownCompilationUnit): Pr
                                                 type: "SpreadElement",
                                                 argument: {
                                                     type: "Identifier",
-                                                    name: `${basename(markdownSourceFile, "." + unit.markdownScript.extension)}_default`,
+                                                    name: `${basename(dirname(markdownSourceFile))}_default`,
                                                 }
                                             }
                                         ]
