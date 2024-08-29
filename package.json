@@ -9,8 +9,9 @@
         "configure": "mkdir -p build",
         "build": "npm run configure && npx esbuild --log-level=silent --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/buildGsheetsAddon.js ./scripts/gsheets-addon/build.mts && BASE_DIR=. ENVIRONMENT=PRODUCTION node ./build/buildGsheetsAddon.js",
         "dev": "npm run configure && npx esbuild --log-level=silent --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/buildGsheetsAddon.js ./scripts/gsheets-addon/build.mts && BASE_DIR=. ENVIRONMENT=DEVELOPMENT node ./build/buildGsheetsAddon.js",
-        "serve": "npm run dev && esbuild --log-level=silent --serve=localhost:8888 --servedir=./build/development",
+        "serve-viewer": "npm run dev && esbuild --log-level=silent --serve=localhost:8888 --servedir=./build/development",
         "website": "npm run configure && npx esbuild --log-level=silent --format=esm --platform=node --target=node21.7 --bundle --packages=external --outfile=./build/buildWebsite.js ./scripts/website/build.mts && BASE_DIR=. node ./build/buildWebsite.js",
+        "serve-website": "npm run website && esbuild --log-level=silent --serve=localhost:8888 --servedir=./build/website/routes",
         "clean": "rm -rf ./build"
     },
     "keywords": [],

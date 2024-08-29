@@ -18,7 +18,7 @@ import { basename, dirname, resolve } from "node:path";
 import { compile as compileSass } from "sass";
 import { hash } from "node:crypto";
 import { parse as parseHtml, HTMLElement as HtmlParserElement } from "node-html-parser";
-import { type PathLike, existsSync, readFileSync, writeFileSync, } from "node:fs";
+import { type PathLike, existsSync, readFileSync, writeFileSync, mkdir, mkdirSync, } from "node:fs";
 
 
 // -----------------------------------------------------------------------------
@@ -489,6 +489,8 @@ export async function injectLicense(unit: CompilationUnit): Promise<Result> {
 
 export async function writeCompilationUnit(unit: CompilationUnit, outputFile: PathLike): Promise<Result> {
     try {
+        const outputDir = dirname(outputFile.toString());
+        if (!existsSync(outputDir)) { mkdirSync(outputDir, { recursive: true }); }
         writeFileSync(outputFile, unit.compiledSource);
     }
 
