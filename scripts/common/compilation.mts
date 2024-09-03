@@ -9,7 +9,7 @@ import tsc, { type CompilerOptions } from "typescript";
 import { BUILD_DIR_CACHE, SRC_CSS_LOAD_PATHS } from "./paths.mts";
 import { BUILD_TIME_ALIASES } from "./aliases.mts";
 import { Config } from "./config.mts";
-import { Html } from "./utilities.mts";
+import { Html, toJsIdent } from "./utilities.mts";
 import { Ok, Err, ERROR } from "./logging.mts";
 import { JSDOM } from "jsdom";
 import { PurgeCSS } from "purgecss";
@@ -198,7 +198,7 @@ export async function compileTsBundle(unit: TsCompilationUnit): Promise<Result> 
 
         if (existsSync(interimFile)) {
             unit.compiledSource = readFileSync(interimFile, "utf-8").toString(); 
-            unit.cachedFile = interimFile; // unlinkSync(interimFile);
+            unit.cachedFile = interimFile;
         } else {
             return Err(`an error occurred during the compilation of typescript bundle for "${unit.file}"`)
         }
@@ -260,7 +260,6 @@ export async function compileGasBundle(unit: TsCompilationUnit): Promise<Result>
         if (existsSync(interimFile)) {
             unit.compiledSource = readFileSync(interimFile, "utf-8").toString(); 
             unit.cachedFile = interimFile;
-            // unlinkSync(interimFile);
         } else {
             return Err(`an error occurred during the compilation of GAS bundle for "${unit.file}"`)
         }
@@ -351,7 +350,7 @@ export async function compileMarkdownTemplate(unit: MarkdownCompilationUnit): Pr
                                                 type: "SpreadElement",
                                                 argument: {
                                                     type: "Identifier",
-                                                    name: `${basename(dirname(markdownSourceFile))}_default`,
+                                                    name: `${toJsIdent(basename(dirname(markdownSourceFile)))}_default`,
                                                 }
                                             }
                                         ]
@@ -507,6 +506,24 @@ export async function prettyHtml(unit: MarkdownCompilationUnit): Promise<Result>
             unit.compiledSource,
             {
                 parser: "html",
+                printWidth: 120,
+            }
+        );
+    }
+
+    catch (error: any) {
+        return Err(`an error occurred while formatting source code for "${unit.file}" with message: ${error}`);
+    }
+
+    return Ok();
+}
+
+export async function prettyCss(unit: CssCompilationUnit): Promise<Result> {
+    try {
+        unit.compiledSource = await prettier.format(
+            unit.compiledSource,
+            {
+                parser: "css",
             }
         );
     }

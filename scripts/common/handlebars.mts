@@ -24,7 +24,7 @@ type HandlebarsOptions = HandlebarsOptionsHash & { [key: PropertyKey]: any };
 //
 // -----------------------------------------------------------------------------
 
-class HandlebarsHelper {
+export class HandlebarsHelper {
     constructor(name: string, procedure: Handlebars.HelperDelegate) {
         this.name = name;
         this.procedure = procedure;
@@ -33,7 +33,7 @@ class HandlebarsHelper {
     readonly procedure: Handlebars.HelperDelegate;
 }
 
-function createHelper(name: string, procedure: Handlebars.HelperDelegate): HandlebarsHelper {
+export function createHelper(name: string, procedure: Handlebars.HelperDelegate): HandlebarsHelper {
     return new HandlebarsHelper(name, procedure);
 }
 

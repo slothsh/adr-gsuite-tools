@@ -1,6 +1,8 @@
 import { ERROR, Result } from "@common/logging.mts";
 import configure from "./configure.mts";
 import buildRoutes from "./buildRoutes.mts";
+import buildStylesheetAssets from "./buildStylesheetAssets.mts";
+import buildStatic from "./buildStatic.mts";
 
 // -----------------------------------------------------------------------------
 //
@@ -9,26 +11,12 @@ import buildRoutes from "./buildRoutes.mts";
 // -----------------------------------------------------------------------------
 
 try {
-    fail_on_error(await configure());
-    fail_on_error(await buildRoutes());
+    Result.exit_error(await configure());
+    Result.exit_error(await buildRoutes());
+    Result.exit_error(await buildStylesheetAssets());
+    Result.exit_error(await buildStatic());
 } catch (error: any) {
     console.error(ERROR, error);
-}
-
-// -----------------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------------
-//
-// -- @SECTION Helpers --
-//
-// -----------------------------------------------------------------------------
-
-function fail_on_error(result: Result) {
-    if (result.error()) {
-        console.error(ERROR, result.context());
-        process.exit(1);
-    }
 }
 
 // -----------------------------------------------------------------------------

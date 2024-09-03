@@ -43,6 +43,13 @@ export class Result {
     context(): string {
         return this.message;
     }
+    
+    static exit_error(result: Result) {
+        if (result.error()) {
+            console.error(ERROR, result.context());
+            process.exit(1);
+        }
+    }
 }
 
 export function Ok(message?: string) {

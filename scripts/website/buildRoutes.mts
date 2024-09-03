@@ -1,8 +1,9 @@
 import fg from "fast-glob";
-import { INFO, Result, Ok, ERROR } from "@common/logging.mts";
+import Handlebars from "handlebars";
+import { INFO, Result, Ok } from "@common/logging.mts";
 import { BUILD_DIR_WEBSITE, WEBSITE_ROUTES_DIR } from "@common/paths.mts";
 import { basename, dirname, resolve, relative } from "node:path";
-import { initializeHandlebars } from "@common/handlebars.mts";
+import { initializeHandlebars, createHelper } from "@common/handlebars.mts";
 import { readFileSync } from "node:fs";
 import {
     writeCompilationUnit,
@@ -76,6 +77,123 @@ export default async function (): Promise<Result> {
         if (result.error()) {
             return result;
         }
+    }
+
+    {
+        // Website-specific helpers
+        Handlebars.registerHelper(
+            "website-footer",
+            (footerCopyright: string, copyrightLogo: { src: string, alt: string }, footerContent: Array<{ [key: string]: string }>) => {
+                const footerTemplate =
+                    `
+                        <ul>
+                            {{#each leftContent}}
+                            <li><a href="{{this.href}}">{{this.text}}</a></li>
+                            {{/each}}
+                        </ul>
+                        <ul>
+                            {{#each rightContent}}
+                            <li><a href="{{this.href}}">{{this.text}}</a></li>
+                            {{/each}}
+                            <li>
+                                <img src="{{copyrightLogo.src}}" alt="{{copyrightLogo.alt}}">
+                                {{copyright}}
+                            </li>
+                        </ul>
+                    `;
+
+                const templateContent = {
+                    leftContent: footerContent.slice(0, Math.ceil(footerContent.length / 2)),
+                    rightContent: footerContent.slice(Math.ceil(footerContent.length / 2)),
+                    copyright: footerCopyright,
+                    copyrightLogo: copyrightLogo,
+                };
+
+                const template = Handlebars.compile(footerTemplate, { strict: true });
+                const html = template(templateContent);
+
+                return html;
+            }
+        );
+
+        Handlebars.registerHelper(
+            "website-navigation",
+            (
+                title: string,
+                logo: { src: string, alt: string },
+                menuId:string,
+                menu: { image: { src: string, alt: string } },
+            ) => {
+                const navTemplate =
+                    `
+                        <div>
+                            <img class="logo" src="{{logo.src}}" alt="{{logo.alt}}">
+                            <h1>{{title}}</h1>
+                        </div>
+                        <div id="{{menuId}}" class="menu-button">
+                            {{{inline-svg-icon menu.image.src "32" "32"}}}
+                        </div>
+                    `;
+
+                const template = Handlebars.compile(navTemplate, { strict: true });
+                const html = template({ title, logo, menuId, menu });
+
+                return html;
+            }
+        );
+
+        Handlebars.registerHelper(
+            "website-menu",
+            (
+                menuElementId: string,
+                anchors: Array<{ href: string, text: string }>,
+                title: string,
+                logo: { src: string, alt: string},
+                postItems: Array<{ href: string, text: string}>,
+                copyright: string,
+                copyrightLogo: { src: string, alt: string},
+            ) => {
+                const menuTemplate =
+                    `
+                        <div>
+                            <div>
+                                <img src="{{logo.src}}" alt="{{logo.alt}}">
+                                <h3>{{title}}</h3>
+                            </div>
+                            <div>
+                                <ul>
+                                    {{#each anchors}}
+                                    <li>
+                                        <img src="{{this.logo.src}}" alt="{{this.logo.alt}}">
+                                        <a href="{{this.href}}">{{this.text}}</a>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                            </div>
+                            <div>
+                                <ul>
+                                    {{#each postItems}}
+                                    <li>
+                                        <a href="{{this.href}}">{{this.text}}</a>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                                <ul>
+                                    <li>
+                                        <img src="{{copyrightLogo.src}}" alt="{{copyrightLogo.alt}}">
+                                        {{copyright}}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+
+                const template = Handlebars.compile(menuTemplate, { strict: true });
+                const html = template({ id: menuElementId, anchors, title, logo, postItems, copyright, copyrightLogo });
+
+                return html;
+            }
+        );
     }
 
     // Pre-Compilation Step

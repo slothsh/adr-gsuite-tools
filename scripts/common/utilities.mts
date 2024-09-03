@@ -155,4 +155,11 @@ export function stringToKeyString(value: string) {
         return `[${quoteString(value)}]`;
 }
 
+export function toJsIdent(value: string): string {
+    // TODO: handle spaces
+    // TODO: handle starts with digits
+    // TODO: handle illegal characters
+    return value.replaceAll("-", "_");
+}
+
 // -----------------------------------------------------------------------------

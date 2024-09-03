@@ -3,8 +3,96 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <title>{{pageTitle}}</title>
+
+        {{#each common.head.links}}
+            <link {{#each this}}
+                {{#if this}}
+                    {{@key}}="{{this}}"
+                {{else}}
+                    {{@key}}
+                {{/if}}
+            {{/each}}/>
+        {{/each}}
+
+        {{#each head.links}}
+            <link {{#each this}}
+                {{#if this}}
+                    {{@key}}="{{this}}"
+                {{else}}
+                    {{@key}}
+                {{/if}}
+            {{/each}}/>
+        {{/each}}
     </head>
+
     <body>
+        <div id="pageMenu">
+            {{{website-menu "pageMenuItems" common.navigation.menu common.navigation.title common.navigation.logo common.globalFooterAnchors common.copyright common.copyrightLogoUrl }}}
+        </div>
+
+        <div id="page">
+            <nav id="pageHeader">
+                {{{website-navigation common.navigation.title common.navigation.logo "pageMenuButton" common.navigation.menuButton}}}
+            </nav>
+
+            <section id="landing">
+                <div class="info">
+                    <h1>{{landing.title}}</h1>
+                    <h3>{{landing.subtitle}}</h3>
+                </div>
+                <div class="image">
+                    <img src="{{landing.image.src}}" alt="{{landing.image.alt}}">
+                </div>
+            </section>
+
+            <section id="features">
+                <h1>Features</h1>
+                <ul>
+                    {{#each features}}
+                    <li>
+                        <img class="logo" src="{{this.image.src}}" alt="{{this.image.alt}}">
+                        <h3>{{this.title}}</h3>
+                        <p>{{this.description}}</p>
+                    </li>
+                    {{/each}}
+                </ul>
+            </section>
+
+            <section id="examples">
+                <h1>Examples</h1>
+                <div>
+                    {{#each examples}}
+                    <div class="item">
+                        <div>
+                            <h3>{{this.title}}</h3>
+                            <p>{{this.description}}</p>
+                        </div>
+                        <img class="logo" src="{{this.image.src}}" alt="{{this.image.alt}}">
+                    </div>
+                    {{/each}}
+                </div>
+            </section>
+
+            <section id="videos">
+                <h1>Video Demonstrations</h1>
+                <div class="gallery">
+                {{#each videos}}
+                    <iframe {{#each this}}
+                        {{#if this}}
+                            {{@key}}="{{this}}"
+                        {{else}}
+                            {{@key}}
+                        {{/if}}
+                    {{/each}}></iframe>
+                {{/each}}
+                </div>
+            </section>
+
+            <div id="pageFooter">
+                {{{website-footer common.copyright common.copyrightLogoUrl common.globalFooterAnchors}}}
+            </div>
+        </div>
     </body>
 </html>

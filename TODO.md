@@ -7,6 +7,19 @@
 
 ___
 
+## 2024-09-02
+
+- [ ] [R] Fix iife markdown scripts running during build
+- [ ] [R] Remove dead-code from shared style assets when compiling
+
+___
+
+## 2024-08-29
+
+- [ ] [F] Parse style links in website markup templates and replace with emitted paths
+
+___
+
 ## 2024-08-28
 
 - [ ] [R] Extract library code into lib/ common directory

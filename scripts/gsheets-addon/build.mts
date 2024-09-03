@@ -16,37 +16,21 @@ import assemble from "./assemble.mts";
 // -----------------------------------------------------------------------------
 
 try {
-    fail_on_error(await configure());
-    fail_on_error(await buildRuntimeEnvironment());
-    fail_on_error(await buildRuntimeStaticData());
-    fail_on_error(await buildMarkdown());
+    Result.exit_error(await configure());
+    Result.exit_error(await buildRuntimeEnvironment());
+    Result.exit_error(await buildRuntimeStaticData());
+    Result.exit_error(await buildMarkdown());
 
     if (Config.ENVIRONMENT == "DEVELOPMENT") {
-        fail_on_error(await buildMarkdownDevelopment()); // TODO: dispatch on dev or prod build
+        Result.exit_error(await buildMarkdownDevelopment()); // TODO: dispatch on dev or prod build
     } else {
-        fail_on_error(await buildLibrary());
+        Result.exit_error(await buildLibrary());
     }
 
-    fail_on_error(await buildStatic());
-    fail_on_error(await assemble());
+    Result.exit_error(await buildStatic());
+    Result.exit_error(await assemble());
 } catch (error: any) {
     console.error(ERROR, error);
-}
-
-// -----------------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------------
-//
-// -- @SECTION Helpers --
-//
-// -----------------------------------------------------------------------------
-
-function fail_on_error(result: Result) {
-    if (result.error()) {
-        console.error(ERROR, result.context());
-        process.exit(1);
-    }
 }
 
 // -----------------------------------------------------------------------------

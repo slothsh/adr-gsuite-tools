@@ -21,6 +21,7 @@ export const SRC_DEVELOPMENT_DIR = resolve(SRC_DIR, "development");
 export const SRC_CSS_LOAD_PATHS = [SRC_MARKDOWN_DIR, resolve(BASE_DIR, "node_modules/bootstrap/scss")];
 export const SCRIPTS_CONFIG_DIR = resolve(SCRIPTS_DIR, "configs");
 export const WEBSITE_ROUTES_DIR = resolve(WEBSITE_DIR, "routes");
+export const WEBSITE_ASSETS_DIR = resolve(WEBSITE_DIR, "assets");
 export const BUILD_DIR_LIBRARY = resolve(BUILD_DIR, "library");
 export const BUILD_DIR_MARKDOWN = resolve(BUILD_DIR, "markdown");
 export const BUILD_DIR_STATIC = resolve(BUILD_DIR, "static");
