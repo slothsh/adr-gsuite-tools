@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{{pageTitle}}</title>
+
+        {{#each common.head.links}}
+            <link {{#each this}}
+                {{#if this}}
+                    {{@key}}="{{this}}"
+                {{else}}
+                    {{@key}}
+                {{/if}}
+            {{/each}}/>
+        {{/each}}
+
+        {{#each head.links}}
+            <link {{#each this}}
+                {{#if this}}
+                    {{@key}}="{{this}}"
+                {{else}}
+                    {{@key}}
+                {{/if}}
+            {{/each}}/>
+        {{/each}}
+    </head>
+
+    <body>
+        <div id="pageMenu">
+            {{{website-menu "pageMenuItems" common.navigation.menu common.navigation.title common.navigation.logo common.globalFooterAnchors common.copyright common.copyrightLogoUrl }}}
+        </div>
+
+        <div id="page">
+            <nav id="pageHeader">
+                {{{website-navigation common.navigation.title common.navigation.logo "pageMenuButton" common.navigation.menuButton}}}
+            </nav>
+
+            <section id="termsAndConditions">
+                <h1>Terms and Conditions</h1>
+                {{#each termsAndConditions}}
+                <div>
+                    <h3>{{this.title}}</h3>
+                    {{#if this.text}}
+                        <p>{{{this.text}}}</p>
+                    {{else if this.list}}
+                        <h4 style="margin-bottom: 1rem;">{{this.list.title}}</h4>
+                        <ul class="list">
+                            {{#each this.list.items}}
+                                <li>{{{this}}}</li>
+                            {{/each}}
+                        </ul>
+                    {{/if}}
+                </div>
+                {{/each}}
+            </section>
+
+            <div id="pageFooter">
+                {{{website-footer common.copyright common.copyrightLogoUrl common.globalFooterAnchors}}}
+            </div>
+        </div>
+    </body>
+</html>
+

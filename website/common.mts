@@ -1,10 +1,18 @@
 const PRODUCT_NAME = "Adrenaline Studios GSuite™ Tools";
-const FLIBBINGBITS_LOGO_URL = "assets/flibbingbits-logo.svg";
-const ADRENALINE_LOGO_URL = "assets/logo-adrenaline.svg";
-const ADRENALINE_LOGO_LINES_URL = "assets/logo-adrenaline-lines.svg";
-const PHOTO_LOGO_URL = "assets/photo.svg";
+const FLIBBINGBITS_LOGO_URL = "/assets/flibbingbits-logo.svg";
+const ADRENALINE_LOGO_URL = "/assets/logo-adrenaline.svg";
+const ADRENALINE_LOGO_LINES_URL = "/assets/logo-adrenaline-lines.svg";
+const PHOTO_LOGO_URL = "/assets/photo.svg";
 
 export namespace Common {
+    export const APPLICATION_NAME = PRODUCT_NAME;
+
+    export const CONTACT = {
+        emailPrivacy: "privacy@flibbingbits.com",
+        emailSupport: "support@flibbingbits.com",
+        emailContact: "hello@flibbingbits.com",
+    };
+
     export const CONTENT = {
         copyright: "Copyright © 2024, Flibbing Bits",
         copyrightLogoUrl: {
@@ -21,14 +29,14 @@ export namespace Common {
 
             menuButton: {
                 image: {
-                    src: "assets/menu.svg",
+                    src: "/assets/menu.svg",
                     alt: "menu, three horizontal lines",
                 },
             },
 
             menu: [
                 {
-                    href: "#page",
+                    href: "/#page",
                     text: "Home",
                     logo: {
                         src: PHOTO_LOGO_URL,
@@ -36,7 +44,7 @@ export namespace Common {
                     }
                 },
                 {
-                    href: "#features",
+                    href: "/#features",
                     text: "Features",
                     logo: {
                         src: PHOTO_LOGO_URL,
@@ -44,7 +52,7 @@ export namespace Common {
                     }
                 },
                 {
-                    href: "#examples",
+                    href: "/#examples",
                     text: "Examples",
                     logo: {
                         src: PHOTO_LOGO_URL,
@@ -52,7 +60,7 @@ export namespace Common {
                     }
                 },
                 {
-                    href: "#videos",
+                    href: "/#videos",
                     text: "Video Demonstrations",
                     logo: {
                         src: PHOTO_LOGO_URL,
@@ -64,6 +72,10 @@ export namespace Common {
 
         head: {
             links: [
+                {
+                    href: "/assets/style.css",
+                    rel: "stylesheet",
+                },
                 {
                     href: ADRENALINE_LOGO_URL,
                     rel: "prefetch",
@@ -135,9 +147,8 @@ export namespace Common {
             });
 
             // @ts-ignore
-            this.element.querySelectorAll("a[href^='#']").forEach((anchor: HTMLAnchorElement) => {
+            this.element.querySelectorAll("a[href^='#'], a[href^='/#']").forEach((anchor: HTMLAnchorElement) => {
                 anchor.addEventListener("click", (event: MouseEvent) => {
-                    event.preventDefault();
                     this.toggle();
                 });
             });
@@ -159,7 +170,6 @@ export namespace Common {
             // the state of class attributes is maintained. We check this
             // in the event that the NavigationMenu has been reinitialized,
             // but its state has not been propogated to the DOM.
-            console.log(document.body.classList);
 
             // @ts-ignore
             this.element.classList.toggle("nav-open");

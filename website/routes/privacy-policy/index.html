@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{{pageTitle}}</title>
+
+        {{#each common.head.links}}
+            <link {{#each this}}
+                {{#if this}}
+                    {{@key}}="{{this}}"
+                {{else}}
+                    {{@key}}
+                {{/if}}
+            {{/each}}/>
+        {{/each}}
+
+        {{#each head.links}}
+            <link {{#each this}}
+                {{#if this}}
+                    {{@key}}="{{this}}"
+                {{else}}
+                    {{@key}}
+                {{/if}}
+            {{/each}}/>
+        {{/each}}
+    </head>
+
+    <body>
+        <div id="pageMenu">
+            {{{website-menu "pageMenuItems" common.navigation.menu common.navigation.title common.navigation.logo common.globalFooterAnchors common.copyright common.copyrightLogoUrl }}}
+        </div>
+
+        <div id="page">
+            <nav id="pageHeader">
+                {{{website-navigation common.navigation.title common.navigation.logo "pageMenuButton" common.navigation.menuButton}}}
+            </nav>
+
+            <section id="privacyPolicy">
+                <h1>Privacy Policy</h1>
+                <h4>Last Updated: <span style="font-weight: normal; margin-left: 2rem;">{{lastUpdated}}</span></h4>
+
+                {{#each privacyPolicy}}
+                <div>
+                    <h3>{{this.title}}</h3>
+                    <p>{{{this.text}}}</p>
+                </div>
+                {{/each}}
+            </section>
+
+            <div id="pageFooter">
+                {{{website-footer common.copyright common.copyrightLogoUrl common.globalFooterAnchors}}}
+            </div>
+        </div>
+    </body>
+</html>
+

@@ -1,38 +1,40 @@
-import { Common } from "website/common.mts";
+import { Common } from "@www/common.mts";
 
 const NAVIGATION_MENU = Common.NavigationMenu.fromElementIds("pageMenu", "pageMenuButton");
 if (NAVIGATION_MENU === null) {
     console.error(`could not initialize navigation menu with id "pageMenu"`);
 } else {
-    // Setup
     NAVIGATION_MENU.registerListeners();
 }
 
-document.querySelectorAll("a[href^='#']").forEach(anchor => {
+document.querySelectorAll("a[href^='#'], a[href^='/#']").forEach(anchor => {
     anchor.addEventListener("click", function (event) {
-        event.preventDefault();
-        document.querySelector(this.getAttribute("href")).scrollIntoView({
-            behavior: "smooth"
-        });
+        const href: string = this.getAttribute("href");
+        if (href.startsWith("/") && document.location.pathname === "/") {
+            event.preventDefault();
+            document.querySelector(href.slice(1)).scrollIntoView({
+                behavior: "smooth"
+            });
+        }
     });
 });
 
 export default {
     common: Common.CONTENT,
 
-    pageTitle: "Hello, World!",
+    pageTitle: "Adrenaline Studios GSuite™ Tools",
 
     head: {
         links: [
             {
                 rel: "prefetch",
-                href: "assets/photo.svg",
+                href: "/assets/photo.svg",
                 as: "image",
                 type: "image/svg+xml",
             },
             {
                 rel: "prefetch",
-                href: "assets/card.svg",
+                href: "/assets/card.svg",
                 as: "image",
                 type: "image/svg+xml",
             }
@@ -43,7 +45,7 @@ export default {
         title: "Tools that make dubbing not suck.",
         subtitle: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro, atque nihil. Eos debitis suscipit alias optio nostrum id deserunt molestias.",
         image: {
-            src: "assets/photo.svg",
+            src: "/assets/photo.svg",
             alt: "placeholder image",
         }
     },
@@ -58,7 +60,7 @@ export default {
             title: "Feature One",
             description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
             image: {
-                src: "assets/photo.svg",
+                src: "/assets/photo.svg",
                 alt: "",
             },
         },
@@ -66,7 +68,7 @@ export default {
             title: "Feature One",
             description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
             image: {
-                src: "assets/photo.svg",
+                src: "/assets/photo.svg",
                 alt: "",
             },
         },
@@ -74,7 +76,7 @@ export default {
             title: "Feature One",
             description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
             image: {
-                src: "assets/photo.svg",
+                src: "/assets/photo.svg",
                 alt: "",
             },
         },
@@ -82,7 +84,7 @@ export default {
             title: "Feature One",
             description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
             image: {
-                src: "assets/photo.svg",
+                src: "/assets/photo.svg",
                 alt: "",
             },
         },
@@ -90,7 +92,7 @@ export default {
             title: "Feature One",
             description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
             image: {
-                src: "assets/photo.svg",
+                src: "/assets/photo.svg",
                 alt: "",
             },
         },
@@ -98,7 +100,7 @@ export default {
             title: "Feature One",
             description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
             image: {
-                src: "assets/photo.svg",
+                src: "/assets/photo.svg",
                 alt: "",
             },
         },
@@ -106,7 +108,7 @@ export default {
             title: "Feature One",
             description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
             image: {
-                src: "assets/photo.svg",
+                src: "/assets/photo.svg",
                 alt: "",
             },
         },
@@ -114,7 +116,7 @@ export default {
             title: "Feature One",
             description: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
             image: {
-                src: "assets/photo.svg",
+                src: "/assets/photo.svg",
                 alt: "",
             },
         },
@@ -125,7 +127,7 @@ export default {
             title: "Example One",
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus ea quisquam maxime aperiam dolor iste vitae explicabo, deleniti atque.",
             image: {
-                src: "assets/card.svg",
+                src: "/assets/card.svg",
                 alt: "",
             },
         },
@@ -133,7 +135,7 @@ export default {
             title: "Example One",
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus ea quisquam maxime aperiam dolor iste vitae explicabo, deleniti atque.",
             image: {
-                src: "assets/card.svg",
+                src: "/assets/card.svg",
                 alt: "",
             },
         },
@@ -141,7 +143,7 @@ export default {
             title: "Example One",
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus ea quisquam maxime aperiam dolor iste vitae explicabo, deleniti atque.",
             image: {
-                src: "assets/card.svg",
+                src: "/assets/card.svg",
                 alt: "",
             },
         },
@@ -149,7 +151,7 @@ export default {
             title: "Example One",
             description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus ea quisquam maxime aperiam dolor iste vitae explicabo, deleniti atque.",
             image: {
-                src: "assets/card.svg",
+                src: "/assets/card.svg",
                 alt: "",
             },
         },

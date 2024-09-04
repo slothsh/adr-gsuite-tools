@@ -62,12 +62,25 @@ body {
     transform: translateX(-40vw);
 
     > div#page {
+      > * {
+        transition: filter 500ms ease-out;
+      }
+
       > :not(:first-child) {
         filter: brightness(0.5) blur(5px);
-        transition: filter 100ms ease-in-out;
         z-index: -1;
       }
     } 
+  }
+}
+
+body > div#page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  > :not(:first-child):not(:last-child) {
+    flex-grow: 1;
   }
 }
 

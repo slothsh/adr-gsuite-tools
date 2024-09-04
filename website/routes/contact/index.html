@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{{pageTitle}}</title>
+
+        {{#each common.head.links}}
+            <link {{#each this}}
+                {{#if this}}
+                    {{@key}}="{{this}}"
+                {{else}}
+                    {{@key}}
+                {{/if}}
+            {{/each}}/>
+        {{/each}}
+
+        {{#each head.links}}
+            <link {{#each this}}
+                {{#if this}}
+                    {{@key}}="{{this}}"
+                {{else}}
+                    {{@key}}
+                {{/if}}
+            {{/each}}/>
+        {{/each}}
+    </head>
+
+    <body>
+        <div id="pageMenu">
+            {{{website-menu "pageMenuItems" common.navigation.menu common.navigation.title common.navigation.logo common.globalFooterAnchors common.copyright common.copyrightLogoUrl }}}
+        </div>
+
+        <div id="page">
+            <nav id="pageHeader">
+                {{{website-navigation common.navigation.title common.navigation.logo "pageMenuButton" common.navigation.menuButton}}}
+            </nav>
+
+            <section id="contact">
+                <h1>Contact</h1>
+                <p>If you have any questions about {{applicationName}}, feel free to shoot us a message at <a href="mailto:{{email}}">{{email}}</a>.</p>
+                <p>We will reach out to you as soon as possible to assist you.</p>
+            </section>
+
+            <div id="pageFooter">
+                {{{website-footer common.copyright common.copyrightLogoUrl common.globalFooterAnchors}}}
+            </div>
+        </div>
+    </body>
+</html>
+

@@ -8,6 +8,7 @@
         "paths": {
             "@src/*": ["src/*"],
             "@lib/*": ["lib/*"],
+            "@www/*": ["website/*"],
             "@environment": ["src/environment.d.ts"],
             "@dictionaries": ["src/dictionaries.d.ts"],
             "@html": ["src/htmlFiles.d.ts"]

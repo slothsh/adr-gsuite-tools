@@ -131,7 +131,7 @@ export default async function (): Promise<Result> {
                             <h1>{{title}}</h1>
                         </div>
                         <div id="{{menuId}}" class="menu-button">
-                            {{{inline-svg-icon menu.image.src "32" "32"}}}
+                            {{{inline-svg-icon "assets/menu.svg" "32" "32"}}}
                         </div>
                     `;
 
@@ -148,10 +148,10 @@ export default async function (): Promise<Result> {
                 menuElementId: string,
                 anchors: Array<{ href: string, text: string }>,
                 title: string,
-                logo: { src: string, alt: string},
-                postItems: Array<{ href: string, text: string}>,
+                logo: { src: string, alt: string },
+                postItems: Array<{ href: string, text: string }>,
                 copyright: string,
-                copyrightLogo: { src: string, alt: string},
+                copyrightLogo: { src: string, alt: string },
             ) => {
                 const menuTemplate =
                     `

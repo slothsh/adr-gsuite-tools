@@ -451,6 +451,8 @@ export async function injectMarkdownJs(unit: MarkdownCompilationUnit): Promise<R
                 scriptNode.set_content(unit.markdownScript.compiledSource);
                 bodyNode.appendChild(scriptNode);
                 unit.compiledSource = html.toString();
+            } else {
+                throw new Error(`could not find "body" tag`);
             }
         }
     }

@@ -1,0 +1,65 @@
+@import "../../assets/style.scss";
+
+@mixin section($color) {
+  display: block;
+  padding: 4rem 8rem;
+  background-color: $color;
+}
+
+body > div#page > section#termsAndConditions {
+  @include section($bg-2);
+  scroll-margin-top: $nav-height;
+  font-size: 1.5rem;
+
+  > * {
+    max-width: 1000px;
+    margin: auto;
+  }
+
+  > h1:first-child {
+    @include section-heading($fg-1);
+  }
+
+  > :not(:first-child) {
+    margin-bottom: 2rem;
+
+    > :first-child {
+      padding: 2rem 0px;
+    }
+
+    p, li {
+      color: $fg-2;
+    }
+
+    .list {
+      li {
+        font-size: 1.25rem;
+        list-style-type: circle;
+        padding: 0rem 2rem;
+      }
+    }
+
+    a {
+      transition: color 100ms ease-in-out;
+      font-weight: bold;
+
+      &:link {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      &:visited {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+
+  > .gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

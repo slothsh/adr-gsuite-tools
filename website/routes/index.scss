@@ -6,11 +6,6 @@
   background-color: $color;
 }
 
-body > div#page {
-  display: flex;
-  flex-direction: column;
-}
-
 body > div#page > section#landing {
   display: flex;
   justify-content: space-evenly;
@@ -81,7 +76,6 @@ body > div#page > section#features {
     }
   }
 }
-
 
 body > div#page > section#examples {
   @include section($bg-1);
