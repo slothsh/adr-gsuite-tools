@@ -12,27 +12,27 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '22'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build website
-      run: npm run website
+      - name: Build website
+        run: npm run website
 
-    - name: Compress dist package
-      run: |
-        mkdir -p dist
-        cd build/website/routes
-        tar -czf ../../../dist/website.tar.gz *
-        zip -r ../../../dist/website.zip .
-        cd ../../..
+      - name: Compress dist package
+        run: |
+          mkdir -p dist
+          cd build/website/routes
+          tar -czf ../../../dist/website.tar.gz *
+          zip -r ../../../dist/website.zip .
+          cd ../../..
 
-    - uses: ncipollo/release-action@v1
-      with:
-        artifacts: "dist/website.tar.gz,dist/website.zip"
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "dist/website.tar.gz,dist/website.zip"
