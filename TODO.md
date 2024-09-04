@@ -7,6 +7,27 @@
 
 ___
 
+## 2024-09-04
+
+- [ ] [F] nginx configuration file build for website
+- [ ] [F] Custom error pages for website
+- [ ] [F] Add FAQ section
+- [ ] [F] Add installation guide 
+- [ ] [F] Create site content (images, icons, copy, etc)
+- [ ] [F] Video demonstration content
+
+- [ ] [R] Add social links to contact page
+- [ ] [R] Review and verify website privacy policy
+- [ ] [R] Review and verify website terms and conditions
+- [ ] [R] Verify that contact email addresses are reachable
+- [ ] [R] Work on website intro transitions
+- [ ] [R] Animations for website interactive components
+- [ ] [R] Spruce up website styling (colors, shadows, etc)
+- [ ] [R] Cleanup website common markup components (factor out into source files + integrate into build)
+- [ ] [R] De-duplicate website markup + style code into common
+
+___
+
 ## 2024-09-02
 
 - [ ] [R] Fix iife markdown scripts running during build
@@ -16,7 +37,7 @@ ___
 
 ## 2024-08-29
 
-- [ ] [F] Parse style links in website markup templates and replace with emitted paths
+- [X] [F] Parse style links in website markup templates and replace with emitted paths
 
 ___
 
