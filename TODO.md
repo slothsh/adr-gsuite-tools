@@ -7,6 +7,12 @@
 
 ___
 
+## 2024-09-05
+
+- [ ] [F] Use the IntersectionObserver API to transition elements on main page
+
+___
+
 ## 2024-09-04
 
 - [ ] [F] nginx configuration file build for website
@@ -15,6 +21,7 @@ ___
 - [ ] [F] Add installation guide 
 - [ ] [F] Create site content (images, icons, copy, etc)
 - [ ] [F] Video demonstration content
+- [ ] [F] Reactive layout for mobile + other screens
 
 - [ ] [R] Add social links to contact page
 - [ ] [R] Review and verify website privacy policy

@@ -1,4 +1,4 @@
-const PRODUCT_NAME = "Adrenaline Studios GSuite™ Tools";
+const PRODUCT_NAME = "Adrenaline Studios Tools";
 const FLIBBINGBITS_LOGO_URL = "/assets/flibbingbits-logo.svg";
 const ADRENALINE_LOGO_URL = "/assets/logo-adrenaline.svg";
 const ADRENALINE_LOGO_LINES_URL = "/assets/logo-adrenaline-lines.svg";
@@ -39,32 +39,32 @@ export namespace Common {
                     href: "/#page",
                     text: "Home",
                     logo: {
-                        src: PHOTO_LOGO_URL,
-                        alt: "placeholder image"
+                        src: "/assets/home.svg",
+                        alt: "icon of house"
                     }
                 },
                 {
                     href: "/#features",
                     text: "Features",
                     logo: {
-                        src: PHOTO_LOGO_URL,
-                        alt: "placeholder image"
+                        src: "/assets/feature.svg",
+                        alt: "icon of graph broken down into heirarchy"
                     }
                 },
                 {
                     href: "/#examples",
                     text: "Examples",
                     logo: {
-                        src: PHOTO_LOGO_URL,
-                        alt: "placeholder image"
+                        src: "/assets/reference.svg",
+                        alt: "icon of light bulb made out of puzzle pieces"
                     }
                 },
                 {
                     href: "/#videos",
                     text: "Video Demonstrations",
                     logo: {
-                        src: PHOTO_LOGO_URL,
-                        alt: "placeholder image"
+                        src: "/assets/video-camera.svg",
+                        alt: "icon of video camera"
                     }
                 },
             ],

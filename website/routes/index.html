@@ -52,9 +52,11 @@
                 <ul>
                     {{#each features}}
                     <li>
-                        <img class="logo" src="{{this.image.src}}" alt="{{this.image.alt}}">
-                        <h3>{{this.title}}</h3>
-                        <p>{{this.description}}</p>
+                        <div>
+                            <img class="logo" src="{{this.image.src}}" alt="{{this.image.alt}}">
+                            <h3>{{this.title}}</h3>
+                        </div>
+                        <p>{{this.summary}}</p>
                     </li>
                     {{/each}}
                 </ul>

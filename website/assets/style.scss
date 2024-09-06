@@ -90,8 +90,9 @@ body >  div#page > nav {
   align-items: center;
   position: sticky;
   top: 0px;
-  background-color: $bg-1;
+  background-color: rgba(5, 10, 13, 1.0);
   padding: $nav-v-padding 4rem;
+  z-index: 1;
 
   > :first-child {
     display: flex;
@@ -167,7 +168,6 @@ body > #pageMenu {
   top: 0px;
   transform: translateX(40vw);
   background-color: $bg-3;
-  z-index: 1;
 
   &.nav-open {
     filter: none;
