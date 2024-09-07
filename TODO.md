@@ -7,6 +7,13 @@
 
 ___
 
+## 2024-09-06
+
+- [ ] [F] Bundled modules that can be cached/prefetched for website builds
+- [ ] [R] Refactor hacky markdown template compiliation (remove jsdom dependency)
+
+___
+
 ## 2024-09-05
 
 - [ ] [F] Use the IntersectionObserver API to transition elements on main page

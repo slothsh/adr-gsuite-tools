@@ -18,6 +18,7 @@ import { basename, dirname, resolve } from "node:path";
 import { compile as compileSass } from "sass";
 import { hash } from "node:crypto";
 import { parse as parseHtml, HTMLElement as HtmlParserElement } from "node-html-parser";
+import { parse as parse5Html, parseFragment as parse5HtmlFragment, serialize as parse5Serialize } from "parse5";
 import { type PathLike, existsSync, readFileSync, writeFileSync, mkdir, mkdirSync, } from "node:fs";
 
 
@@ -442,15 +443,13 @@ export async function injectMarkdownCss(unit: MarkdownCompilationUnit): Promise<
 
 export async function injectMarkdownJs(unit: MarkdownCompilationUnit): Promise<Result> {
     try {
-        // TODO:
         if (unit.markdownScript) {
-            const html = parseHtml(unit.compiledSource);
-            const bodyNode = Html.findNodeTag("body", html);
+            const html = parse5Html(unit.compiledSource);
+            const bodyNode = Html.findNodeTagParse5("body", html);
             if (bodyNode !== null) {
-                const scriptNode = new HtmlParserElement("script", { id: "", class: "" }, `type="module"`);
-                scriptNode.set_content(unit.markdownScript.compiledSource);
-                bodyNode.appendChild(scriptNode);
-                unit.compiledSource = html.toString();
+                const scriptNode = parse5HtmlFragment(`<script type="module">${unit.markdownScript.compiledSource}</script>`);
+                bodyNode.childNodes.push(scriptNode.childNodes[0]);
+                unit.compiledSource = parse5Serialize(html);
             } else {
                 throw new Error(`could not find "body" tag`);
             }

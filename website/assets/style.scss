@@ -92,7 +92,7 @@ body >  div#page > nav {
   top: 0px;
   background-color: rgba(5, 10, 13, 1.0);
   padding: $nav-v-padding 4rem;
-  z-index: 1;
+  z-index: 100;
 
   > :first-child {
     display: flex;

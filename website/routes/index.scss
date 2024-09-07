@@ -19,6 +19,16 @@ body > div#page > section#landing {
   height: page-height(8rem);
   scroll-margin-top: $nav-height;
   animation: bg-pan-right 8s both;
+  position: relative;
+
+  > canvas {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 10;
+  }
 
   box-sizing: content-box;
   background: rgb(15,28,37);
@@ -29,6 +39,8 @@ body > div#page > section#landing {
     flex-direction: column;
     max-width: 75%;
     height: 384px;
+    z-index: 20;
+    margin: 0rem 16rem 0rem 0rem;
 
     > :not(:first-child) {
       margin-top: 2rem;
@@ -145,6 +157,8 @@ body > div#page > section#examples {
 
         > p {
           font-size: 1.5rem;
+          max-width: 75%;
+          line-height: 2.5rem;
         }
       }
 

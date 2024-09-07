@@ -1,5 +1,6 @@
 import * as acorn from "acorn";
 import { HTMLElement as HtmlParserElement } from "node-html-parser";
+import type { Document, Element, ChildNode } from "node_modules/parse5/dist/tree-adapters/default.d.ts";
 
 // -----------------------------------------------------------------------------
 //
@@ -20,6 +21,48 @@ export namespace Html {
         }
 
         return bodyTag;
+    }
+
+    function isParse5Element(element: ChildNode): element is Element {
+        return "nodeName" in element
+            && "tagName" in element
+            && "attrs" in element
+            && "namespaceURI" in element
+            && "sourceCodeLocation" in element
+            && "parentNode" in element
+            && "childNodes" in element;
+    }
+
+    export function findNodeTagParse5(tag: string, root: Document): Element | null {
+        let nodeTag: Element | null = null;
+
+        for (const child of root.childNodes) {
+            nodeTag = findNodeTagParse5Impl(tag, child as Element);
+            if (nodeTag !== null)
+                break;
+        }
+
+        return nodeTag;
+    }
+
+    function findNodeTagParse5Impl(tag: string, root: Element): Element | null {
+
+        if (root.nodeName === tag) {
+            return root;
+        }
+
+        if (!("childNodes" in root)) {
+            return null;
+        }
+
+        let nodeTag: Element | null = null;
+        for (const child of root.childNodes) {
+            nodeTag = findNodeTagParse5Impl(tag, child as Element);
+            if (nodeTag !== null)
+                break;
+        }
+
+        return nodeTag;
     }
 }
 
