@@ -28,6 +28,15 @@
     </head>
 
     <body>
+        <div id="loading">
+            <div>
+                <div>
+                    <img src="/assets/spinner.svg" alt="spinning semi-circle"></img>
+                    <h2>Adrenaline Studios Tools</h2>
+                </div>
+            </div>
+        </div>
+
         <div id="pageMenu">
             {{{website-menu "pageMenuItems" common.navigation.menu common.navigation.title common.navigation.logo common.globalFooterAnchors common.copyright common.copyrightLogoUrl }}}
         </div>
@@ -98,5 +107,8 @@
                 {{{website-footer common.copyright common.copyrightLogoUrl common.globalFooterAnchors}}}
             </div>
         </div>
+
+        {{{inline-shader "assets/particles.vert.glsl" "vertex" "vertexShader"}}}
+        {{{inline-shader "assets/wormhole.frag.glsl" "fragment" "fragmentShader"}}}
     </body>
 </html>

@@ -1,0 +1,10 @@
+<svg width="608" height="608" viewBox="0 0 608 608" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialGradient id="paint0_angular_257_34" cx="0" cy="0" r="96" gradientUnits="userSpaceOnUse" gradientTransform="translate(304 304) rotate(90) scale(256)">
+<stop offset="0.546452" stop-color="white"/>
+<stop offset="0.581877" stop-color="white" stop-opacity="0"/>
+<stop offset="0.764688" stop-color="white" stop-opacity="0"/>
+</radialGradient>
+</defs>
+<path d="M560 304C560 445.385 445.385 560 304 560C162.615 560 48 445.385 48 304C48 162.615 162.615 48 304 48" stroke="url(#paint0_angular_257_34)" stroke-width="96" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

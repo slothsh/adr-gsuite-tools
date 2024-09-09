@@ -126,10 +126,10 @@ export default async function (): Promise<Result> {
             ) => {
                 const navTemplate =
                     `
-                        <div>
+                        <a href="/#page">
                             <img class="logo" src="{{logo.src}}" alt="{{logo.alt}}">
                             <h1>{{title}}</h1>
-                        </div>
+                        </a>
                         <div id="{{menuId}}" class="menu-button">
                             {{{inline-svg-icon "assets/menu.svg" "32" "32"}}}
                         </div>
@@ -192,6 +192,21 @@ export default async function (): Promise<Result> {
                 const html = template({ id: menuElementId, anchors, title, logo, postItems, copyright, copyrightLogo });
 
                 return html;
+            }
+        );
+
+        type ShaderKind = "vertex" | "fragment";
+        Handlebars.registerHelper(
+            "inline-shader",
+            (path: string, kind: ShaderKind, id: string) => {
+                if (kind !== "vertex" && kind !== "fragment") {
+                    throw new Error(`unrecognized shader: ${kind}`);
+                }
+
+                const sourceCode = readFileSync(path).toString();
+                const typeAttribute = (kind === "vertex") ? "x-shader/x-vertex" :  "x-shader/x-fragment";
+
+                return `<script id="${id}" type="${typeAttribute}">${sourceCode}</script>`;
             }
         );
     }

@@ -1,63 +1,124 @@
 import { Common } from "@www/common.mts";
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import * as THREE from "three";
 
-function main() {
-    const NAVIGATION_MENU = Common.NavigationMenu.fromElementIds("pageMenu", "pageMenuButton");
-    if (NAVIGATION_MENU === null) {
-        console.error(`could not initialize navigation menu with id "pageMenu"`);
-    } else {
-        NAVIGATION_MENU.registerListeners();
-    }
+document.addEventListener("DOMContentLoaded", load);
+// document.addEventListener("DOMContentLoaded", main);
+document.addEventListener("mousemove", (event: MouseEvent) => {
+    mouse.x = event.screenX;
+    mouse.y = event.screenY;
+    mouse.normalize();
+    mouseOffset.x = event.offsetX;
+    mouseOffset.y = event.offsetY;
+    mouseOffset.normalize();
+});
 
-    document.querySelectorAll("a[href^='#'], a[href^='/#']").forEach(anchor => {
-        anchor.addEventListener("click", function (event) {
-            const href: string = this.getAttribute("href");
-            if (href.startsWith("/") && document.location.pathname === "/") {
-                event.preventDefault();
-                document.querySelector(href.slice(1)).scrollIntoView({
-                    behavior: "smooth"
-                });
-            }
+// -----------------------------------------------------------------------------
+
+async function load() {
+    const loadingScreen = document.getElementById("loading");
+    document.documentElement.style.overflow = "hidden";
+
+    if (loadingScreen) {
+        await initThreeJs();
+
+        const NAVIGATION_MENU = Common.NavigationMenu.fromElementIds("pageMenu", "pageMenuButton");
+        if (NAVIGATION_MENU === null) {
+            console.error(`could not initialize navigation menu with id "pageMenu"`);
+        } else {
+            NAVIGATION_MENU.registerListeners();
+        }
+
+        document.querySelectorAll("a[href^='#'], a[href^='/#']").forEach(anchor => {
+            anchor.addEventListener("click", function (event) {
+                const href: string = this.getAttribute("href");
+                if (href.startsWith("/") && document.location.pathname === "/") {
+                    event.preventDefault();
+                    document.querySelector(href.slice(1)).scrollIntoView({
+                        behavior: "smooth"
+                    });
+                }
+            });
         });
-    });
 
-    const initSucces = initThreeJs();
+        const observer = new ResizeObserver((entries) => {
+            updateRenderer();
+        });
 
-    const observer = new ResizeObserver((entries) => {
-        updateRenderer();
-    });
-    observer.observe(parent);
+        observer.observe(parent);
+        observer.observe(parentParticles);
 
-    if (initSucces) {
-        startRender();
+        loadingScreen.style.backgroundColor = "transparent";
+        setTimeout(() => { loadingScreen.style.display = "none"; }, 1000);
+        document.documentElement.style.overflow = "";
+
+        main();
     }
 }
+
+async function main() {
+    startRender();
+}
+
+let parentParticles: HTMLElement;
+let parentParticlesRect: DOMRect;
+let parentParticlesAspectRatio: number;
+let cameraParticles: THREE.OrthographicCamera;
+let rendererParticles: THREE.WebGLRenderer;
 
 let parent: HTMLElement;
 let parentRect: DOMRect;
 let parentAspectRatio: number;
 let scene: THREE.Scene;
+let sceneParticles: THREE.Scene;
 let camera: THREE.OrthographicCamera;
 let renderer: THREE.WebGLRenderer;
 let logoObject: THREE.Object3D;
 let ambientLight: THREE.AmbientLight;
 let pointLight: THREE.PointLight;
-let geometry: THREE.BoxGeometry;
-let material: THREE.MeshBasicMaterial;
-let cube: THREE.Mesh;
+let sideLight: THREE.PointLight;
+let particleMaterial: THREE.ShaderMaterial;
+let plane: THREE.Mesh;
+let mouse: THREE.Vector2 = new THREE.Vector2(0.0, 0.0);
+let mouseOffset: THREE.Vector2 = new THREE.Vector2(0.0, 0.0);
+const unitScale = new THREE.Vector3(1.0, 1.0, 1.0);
 
 function startRender(time?: number) {
-    // cube.rotation.x += 0.01;
-    // cube.rotation.y += 0.01;
     if (logoObject) {
-        logoObject.rotation.y += 0.01;
+        if (logoObject.scale.dot(logoObject.scale) < unitScale.dot(unitScale)) {
+            logoObject.scale.set(logoObject.scale.x + 0.1, logoObject.scale.y + 0.1, logoObject.scale.z + 0.1, );
+        }
+
+        logoObject.lookAt(mouse.x, -mouse.y, 2.0);
+
+        if (pointLight) {
+            pointLight.lookAt(logoObject.position);
+        }
+
+        if (sideLight) {
+            sideLight.lookAt(logoObject.position);
+        }
     }
+
+    if (particleMaterial) {
+        particleMaterial.uniforms.iResolution.value.set(parentParticlesRect.width, parentParticlesRect.height);
+        particleMaterial.uniforms.iTime.value = time;
+    }
+
     renderer.render(scene, camera);
+    // rendererParticles.render(sceneParticles, cameraParticles);
     requestAnimationFrame(startRender);
 }
 
 function updateRenderer() {
+    parentParticlesRect = parentParticles.getBoundingClientRect();
+    parentParticlesAspectRatio = parentParticlesRect.width / parentParticlesRect.height;
+    cameraParticles.left = -parentParticlesRect.width/parentParticlesRect.height;
+    cameraParticles.right = parentParticlesRect.width/parentParticlesRect.height;
+    cameraParticles.updateProjectionMatrix();
+    rendererParticles.setSize(parentParticlesRect.width, parentParticlesRect.height);
+    rendererParticles.setPixelRatio(window.devicePixelRatio);
+
     parentRect = parent.getBoundingClientRect();
     parentAspectRatio = parentRect.width / parentRect.height;
     camera.left = -parentRect.width/parentRect.height;
@@ -67,57 +128,88 @@ function updateRenderer() {
     renderer.setPixelRatio(window.devicePixelRatio);
 }
 
-function initThreeJs() {
+async function initThreeJs() {
     parent = document.querySelector("section#landing");
     parentRect = parent.getBoundingClientRect();
     parentAspectRatio = parentRect.width / parentRect.height;
     scene = new THREE.Scene();
     camera = new THREE.OrthographicCamera(-parentRect.width/parentRect.height, parentRect.width/parentRect.height);
-    renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(parentRect.width, parentRect.height);
     parent.appendChild(renderer.domElement);
-    ambientLight = new THREE.AmbientLight(0xffffff, 5);
-    pointLight = new THREE.PointLight(0xffffff, 5, 0);
-    pointLight.position.set(0.0, 0.0, 1.0);
+    ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+    pointLight = new THREE.PointLight(0xffffff, 1.0, 0);
+    pointLight.position.set(0.0, 0.0, 7.0);
+    sideLight = new THREE.PointLight(0xffffff, 1, 0);
+    sideLight.position.set(0.0, 0.5, 4.0);
+    sideLight.rotation.set(0.0, Math.PI / 2, 0.0);
     scene.add(ambientLight);
     scene.add(pointLight);
+    scene.add(sideLight);
     camera.position.z = 3;
 
     const loader = new OBJLoader();
 
-    loader.load(
-	    "/assets/logo-adrenaline.obj",
-	    // called when resource is loaded
-	    function (object: THREE.Object3D) {
-		    object.scale.set(1.0, 1.0, 1.0);
-            object.position.x = 1.0;
+    const object = await loader.loadAsync( "/assets/logo-adrenaline.obj", () => {});
 
-            for (const child of object.children) {
-                if (child instanceof THREE.Mesh) {
-                    child.material.side = THREE.CullFaceBack;
-                    // child.material = new THREE.MeshPhongMaterial({ color: 0x646464, side: THREE.CullFaceBack });
-                }
+	object.scale.set(1.0, 1.0, 1.0);
+    object.position.x = 1.0;
+
+    for (const child of object.children) {
+        if (child instanceof THREE.Mesh) {
+            child.geometry.computeVertexNormals();
+            child.material.side = THREE.CullFaceBack;
+            if (child.name === "Square") {
+                child.material = new THREE.MeshPhongMaterial({
+                    color: 0x181818,
+                    side: THREE.CullFaceBack,
+                    specular: 0xffffff,
+                });
+            } else if (child.name.startsWith("Line")) {
+                child.material = new THREE.MeshPhongMaterial({
+                    color: 0x3d85b9,
+                    side: THREE.CullFaceNone,
+                    specular: 0xffffff,
+                    emissive: 0x3d85b9,
+                    emissiveIntensity: 1.0,
+                });
             }
+        }
+    }
 
-            logoObject = object;
-		    scene.add(object);
+    logoObject = object;
+	scene.add(object);
+
+    parentParticles = document.querySelector("div#page");
+    parentParticlesRect = parentParticles.getBoundingClientRect();
+    parentParticlesAspectRatio = parentParticlesRect.width / parentParticlesRect.height;
+    cameraParticles = new THREE.OrthographicCamera(-parentParticlesRect.width/parentParticlesRect.height, parentParticlesRect.width/parentParticlesRect.height);
+    rendererParticles = new THREE.WebGLRenderer({ alpha: true, antialias: true, });
+    rendererParticles.setPixelRatio(window.devicePixelRatio);
+    rendererParticles.setSize(parentParticlesRect.width, parentParticlesRect.height);
+    parentParticles.appendChild(rendererParticles.domElement);
+    sceneParticles = new THREE.Scene();
+    parentParticlesRect = parentParticles.getBoundingClientRect();
+    particleMaterial = new THREE.ShaderMaterial({
+	    uniforms: {
+		    iTime: { value: 0.0 },
+		    iResolution: { value: new THREE.Vector2(parentParticlesRect.width, parentParticlesRect.height) },
+		    vParticleColor: { value: new THREE.Vector4(0x18/255.0, 0x2c/255.0, 0x32/255.0, 1.0) },
 	    },
 
-	    function() {
+	    vertexShader: document.getElementById("vertexShader").textContent,
+	    fragmentShader: document.getElementById("fragmentShader").textContent
+    });
 
-	    },
 
-	    // called when loading has errors
-	    function (error) {
-		    console.log(`An error happened: ${error}`);
-	    }
-    );
+    const geometry = new THREE.PlaneGeometry(4.5, 2);
+    plane = new THREE.Mesh(geometry, particleMaterial);
+    plane.position.set(0.0, 0.0, -1.0);
+    sceneParticles.add(plane);
 
     return true;
 }
-
-document.addEventListener("DOMContentLoaded", main);
 
 export default {
     common: Common.CONTENT,
@@ -143,6 +235,12 @@ export default {
                 href: "/assets/logo-adrenaline.obj",
                 as: "text",
                 type: "text/plain",
+            },
+            {
+                rel: "prefetch",
+                href: "/assets/spinner.svg",
+                as: "image",
+                type: "image/svg+xml",
             }
         ]
     },
@@ -158,7 +256,7 @@ export default {
 
     features: [
         {
-            title: "US to UK Converter",
+            title: "US to UK English Word Substitution",
             summary: "Easily substitute US English words with UK English in any source text.",
             image: {
                 src: "/assets/us-to-uk.svg",
@@ -166,11 +264,19 @@ export default {
             }
         },
         {
-            title: "Extract English Variants",
-            summary: "Quickly extract US or UK English words from any source text.",
+            title: "Extract Variant Words",
+            summary: "Filter and Extract US or UK English words from any source text.",
             image: {
                 src: "/assets/extract-words.svg",
                 alt: "Icon depicting extraction of English language variants"
+            }
+        },
+        {
+            title: "Dictionary Included",
+            summary: "More than 1800 US to UK word variants are provided by default.",
+            image: {
+                src: "/assets/big-dictionary.svg",
+                alt: "Icon representing a dictionary that has over 1800 US to UK word mappings"
             }
         },
         {
@@ -182,27 +288,19 @@ export default {
             }
         },
         {
-            title: "Sheets Range Support",
-            summary: "Works seamlessly with regular Google Sheets ranges as input.",
-            image: {
-                src: "/assets/range-support.svg",
-                alt: "Icon showing Google Sheets range support"
-            }
-        },
-        {
-            title: "Completely Free",
-            summary: "This addon is available at no cost.",
-            image: {
-                src: "/assets/free.svg",
-                alt: "Icon representing a free addon"
-            }
-        },
-        {
             title: "Simple Functions",
             summary: "Utilizes straightforward Google Sheets functions for easy use.",
             image: {
                 src: "/assets/simple-functions.svg",
                 alt: "Icon illustrating simple functions"
+            }
+        },
+        {
+            title: "Sheets Range Support",
+            summary: "Works seamlessly with regular Google Sheets ranges as input.",
+            image: {
+                src: "/assets/range-support.svg",
+                alt: "Icon showing Google Sheets range support"
             }
         },
         {
@@ -213,14 +311,6 @@ export default {
                 alt: "Icon representing help with examples"
             }
         },
-        {
-            title: "Language Localization",
-            summary: "Easily adapt your text for regional English differences.",
-            image: {
-                src: "/assets/localisation.svg",
-                alt: "Icon for language localization"
-            }
-        }
     ],
 
     examples: [
