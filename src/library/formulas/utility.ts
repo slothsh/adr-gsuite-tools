@@ -118,16 +118,16 @@ function ADR_LIST_UK_TO_US(text: string): string {
  * @return The input text with all US dialect words revealed and all other words redacted.
  * @customfunction
  * */
-function ADR_REVEAL_US(text: string, replaceOther: string): string {
+function ADR_REVEAL_US(text: string, replaceOther: string = ""): string {
     const localePair = makeLocalePair("en-US", "en-GB");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const replaceOtherChecked = (replaceOther === "")
-        ? "_"
-        : replaceOther.slice(0, 1);
+    const replaceOtherChecked = (replaceOther && replaceOther !== "")
+        ? replaceOther.slice(0, 1)
+        : "_";
 
     const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, true);
     return revealedText;
@@ -141,16 +141,16 @@ function ADR_REVEAL_US(text: string, replaceOther: string): string {
  * @return The input text with all UK dialect words revealed and all other words redacted.
  * @customfunction
  * */
-function ADR_REVEAL_UK(text: string, replaceOther: string): string {
+function ADR_REVEAL_UK(text: string, replaceOther: string = ""): string {
     const localePair = makeLocalePair("en-GB", "en-US");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const replaceOtherChecked = (replaceOther === "")
-        ? "_"
-        : replaceOther.slice(0, 1);
+    const replaceOtherChecked = (replaceOther && replaceOther !== "")
+        ? replaceOther.slice(0, 1)
+        : "_";
 
     const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, true);
     return revealedText;
@@ -164,16 +164,16 @@ function ADR_REVEAL_UK(text: string, replaceOther: string): string {
  * @return The input text with all US dialect words revealed and converted to UK dialect, and all other words redacted.
  * @customfunction
  * */
-function ADR_REVEAL_US_TO_UK(text: string, replaceOther: string): string {
+function ADR_REVEAL_US_TO_UK(text: string, replaceOther: string = ""): string {
     const localePair = makeLocalePair("en-US", "en-GB");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const replaceOtherChecked = (replaceOther === "")
-        ? "_"
-        : replaceOther.slice(0, 1);
+    const replaceOtherChecked = (replaceOther && replaceOther !== "")
+        ? replaceOther.slice(0, 1)
+        : "_";
 
     const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, false);
     return revealedText;
@@ -187,16 +187,16 @@ function ADR_REVEAL_US_TO_UK(text: string, replaceOther: string): string {
  * @return The input text with all UK dialect words revealed and converted to US dialect, and all other words redacted.
  * @customfunction
  * */
-function ADR_REVEAL_UK_TO_US(text: string, replaceOther: string): string {
+function ADR_REVEAL_UK_TO_US(text: string, replaceOther: string = ""): string {
     const localePair = makeLocalePair("en-GB", "en-US");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const replaceOtherChecked = (replaceOther === "")
-        ? "_"
-        : replaceOther.slice(0, 1);
+    const replaceOtherChecked = (replaceOther && replaceOther !== "")
+        ? replaceOther.slice(0, 1)
+        : "_";
 
     const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, false);
     return revealedText;
