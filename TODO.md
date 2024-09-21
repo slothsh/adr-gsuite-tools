@@ -7,6 +7,14 @@
 
 ___
 
+## 2024-09-21
+
+- [X] Use ADR_* namespace for addon client API  
+- [ ] Configure addon build to not strip comments for client API
+- [ ] Configure addon build to insert banner comments using esbuild
+
+___
+
 ## 2024-09-06
 
 - [ ] [F] Bundled modules that can be cached/prefetched for website builds
@@ -16,7 +24,7 @@ ___
 
 ## 2024-09-05
 
-- [ ] [F] Use the IntersectionObserver API to transition elements on main page
+- [ ] [F] ~Use the IntersectionObserver API to transition elements on main page~
 
 ___
 
@@ -26,17 +34,17 @@ ___
 - [ ] [F] Custom error pages for website
 - [ ] [F] Add FAQ section
 - [ ] [F] Add installation guide 
-- [ ] [F] Create site content (images, icons, copy, etc)
+- [X] [F] Create site content (images, icons, copy, etc)
 - [ ] [F] Video demonstration content
-- [ ] [F] Reactive layout for mobile + other screens
+- [ ] [F] Responsive layout for mobile + other screens
 
 - [ ] [R] Add social links to contact page
 - [ ] [R] Review and verify website privacy policy
 - [ ] [R] Review and verify website terms and conditions
 - [ ] [R] Verify that contact email addresses are reachable
-- [ ] [R] Work on website intro transitions
+- [X] [R] Work on website intro transitions
 - [ ] [R] Animations for website interactive components
-- [ ] [R] Spruce up website styling (colors, shadows, etc)
+- [X] [R] Spruce up website styling (colors, shadows, etc)
 - [ ] [R] Cleanup website common markup components (factor out into source files + integrate into build)
 - [ ] [R] De-duplicate website markup + style code into common
 
@@ -44,7 +52,7 @@ ___
 
 ## 2024-09-02
 
-- [ ] [R] Fix iife markdown scripts running during build
+- [X] [R] Fix iife markdown scripts running during build
 - [ ] [R] Remove dead-code from shared style assets when compiling
 
 ___
@@ -64,7 +72,7 @@ ___
 - [ ] [R] Remove globals from common build helpers
 - [ ] [R] Factor out inlined dictionary data file paths to common paths for run-time static data build
 - [ ] [R] Better build diagnostic messages
-- [ ] [R] Incorporate stat command to check if rebuilds are required for certain files 
+- [X] [R] Incorporate stat command to check if rebuilds are required for certain files 
 
 ___
 
@@ -78,7 +86,7 @@ ___
 
 ## 2024-06-14
 
-- [ ] [R] Prune unused packages & dependencies
+- [X] [R] Prune unused packages & dependencies
 
 ___
 
