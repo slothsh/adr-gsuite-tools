@@ -3,7 +3,7 @@
     "name": "Adrenaline Studios Tools",
     "version": "0.0.11",
     "author": "Stefan Olivier",
-    "authorEmail": "stefan@adrenaline.global",
+    "authorEmail": "stefan@africaaudiopost.com",
     "authorWebsite": "https://stefanolivier.com",
     "scripts": {
         "configure": "mkdir -p build",
