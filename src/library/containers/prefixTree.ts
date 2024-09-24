@@ -76,7 +76,7 @@ export class PrefixTree {
         return null;
     }
 
-    searchAllWords(text: string, returnSource: boolean = false): Array<string> {
+    searchAllWords(text: string, returnSource: boolean = false, customDictionary?: Map<string, string> | null): Array<string> {
         const allWords: Array<TokenWithSource> = text
             .toLowerCase()
             .split(" ")
@@ -89,15 +89,24 @@ export class PrefixTree {
         const matches: Array<string> = [];
 
         for (const word of allWords) {
+            // Check if we need to search for this word
             if (!word.token) { continue; }
 
+            const sourceWordUniformMatch = word.source.match(/\b[A-z\-]+\b/);
+            const sourceWordUniform = (sourceWordUniformMatch !== null && sourceWordUniformMatch.length > 0)
+                ? sourceWordUniformMatch[0]
+                : word.source;
+
+            // Check custom dictionary first
+            if (customDictionary && customDictionary.has(word.token)) {
+                const substituted = word.source.replace(/\b[A-z\-]+\b/, customDictionary.get(word.token));
+                matches.push((returnSource) ? sourceWordUniform : substituted);
+                continue;
+            }
+
+            // Check pre-compiled dictionary
             const match = this.searchWord(word.token);
             if (match !== null) {
-                const sourceWordUniformMatch = word.source.match(/\b[A-z\-]+\b/);
-                const sourceWordUniform = (sourceWordUniformMatch !== null && sourceWordUniformMatch.length > 0)
-                    ? sourceWordUniformMatch[0]
-                    : word.source;
-
                 matches.push((returnSource) ? sourceWordUniform : match);
             }
         }
@@ -107,7 +116,8 @@ export class PrefixTree {
 
     revealAllWords(text: string,
                    placeholder: string = "_",
-                   returnSource: boolean = false): string {
+                   returnSource: boolean = false,
+                   customDictionary?: Map<string, string> | null): string {
         const allWords: Array<TokenWithSource> = text
             .split(" ")
             .map((source) => {
@@ -129,11 +139,20 @@ export class PrefixTree {
                 placeholder.repeat(sourceWordUniform.length)
             );
 
+            // Check if we need to search for this word
             if (!word.token) {
                 matches.push(placeholderText);
                 continue;
             }
 
+            // Check custom dictionary first
+            if (customDictionary && customDictionary.has(word.token)) {
+                const substituted = word.source.replace(/\b[A-z\-]+\b/, customDictionary.get(word.token));
+                matches.push((returnSource) ? word.source : substituted);
+                continue;
+            }
+
+            // Check pre-compiled dictionary
             const match = this.searchWord(word.token);
             if (match !== null) {
                 const substituted = word.source.replace(/\b[A-z\-]+\b/, match);
@@ -146,7 +165,7 @@ export class PrefixTree {
         return matches.join(" ");
     }
 
-    transposeText(text: string): string {
+    transposeText(text: string, customDictionary?: Map<string, string> | null): string {
         const allWords: Array<TokenWithSource> = text
             .split(" ")
             .map((source) => {
@@ -157,14 +176,24 @@ export class PrefixTree {
 
         const matches: Array<string> = [];
         for (const word of allWords) {
+            // Check if we need to search for this word
             if (!word.token) {
                 matches.push(word.source);
                 continue;
             }
 
+            // Check custom dictionary first
+            if (customDictionary && customDictionary.has(word.token)) {
+                const substituted = word.source.replace(/\b[A-z\-]+\b/, customDictionary.get(word.token));
+                matches.push(substituted);
+                continue;
+            }
+
+            // Check pre-compiled dictionary
             const match = this.searchWord(word.token);
             if (match !== null) {
                 const substituted = word.source.replace(/\b[A-z\-]+\b/, match);
+
                 matches.push(substituted);
             } else {
                 matches.push(word.source);

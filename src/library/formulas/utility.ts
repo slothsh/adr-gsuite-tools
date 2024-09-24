@@ -1,3 +1,4 @@
+import { prepareCustomDictionary } from "@src/library/utility/helpers.ts";
 import { makeLocalePair, verifyLocalePair } from "@src/library/locale/locale.ts";
 import { PrefixTree } from "@src/library/containers/prefixTree.ts";
 import { LOCALE_PAIRS_MAPPING } from "@dictionaries";
@@ -9,14 +10,15 @@ import { LOCALE_PAIRS_MAPPING } from "@dictionaries";
  * @return The same input text with all US dialect words replaced with their UK equivalent.
  * @customfunction
  * */
-function ADR_US_TO_UK(text: string): string {
+function ADR_US_TO_UK(text: string, userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-US", "en-GB");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const transposed = prefixTree.transposeText(text);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const transposed = prefixTree.transposeText(text, pairedUserDictionary);
     return transposed;
 }
 
@@ -27,14 +29,15 @@ function ADR_US_TO_UK(text: string): string {
  * @return The same input text with all UK dialect words replaced with their US equivalent.
  * @customfunction
  * */
-function ADR_UK_TO_US(text: string): string {
+function ADR_UK_TO_US(text: string, userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-GB", "en-US");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const transposed = prefixTree.transposeText(text);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const transposed = prefixTree.transposeText(text, pairedUserDictionary);
     return transposed;
 }
 
@@ -45,14 +48,15 @@ function ADR_UK_TO_US(text: string): string {
  * @return A comma-separated list of US dialect words.
  * @customfunction
  * */
-function ADR_LIST_US(text: string): string {
+function ADR_LIST_US(text: string, userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-US", "en-GB");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const allWords = prefixTree.searchAllWords(text, true);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const allWords = prefixTree.searchAllWords(text, true, pairedUserDictionary);
     return allWords.join(", ");
 }
 
@@ -63,14 +67,15 @@ function ADR_LIST_US(text: string): string {
  * @return A comma-separated list of UK dialect words.
  * @customfunction
  * */
-function ADR_LIST_UK(text: string): string {
+function ADR_LIST_UK(text: string, userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-GB", "en-US");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const allWords = prefixTree.searchAllWords(text, true);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const allWords = prefixTree.searchAllWords(text, true, pairedUserDictionary);
     return allWords.join(", ");
 }
 
@@ -81,14 +86,15 @@ function ADR_LIST_UK(text: string): string {
  * @return A comma-separated list of US dialect words converted UK dialect.
  * @customfunction
  * */
-function ADR_LIST_US_TO_UK(text: string): string {
+function ADR_LIST_US_TO_UK(text: string, userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-US", "en-GB");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const allWords = prefixTree.searchAllWords(text, false);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const allWords = prefixTree.searchAllWords(text, false, pairedUserDictionary);
     return allWords.join(", ");
 }
 
@@ -99,14 +105,15 @@ function ADR_LIST_US_TO_UK(text: string): string {
  * @return A comma-separated list of UK dialect words converted US dialect.
  * @customfunction
  * */
-function ADR_LIST_UK_TO_US(text: string): string {
+function ADR_LIST_UK_TO_US(text: string, userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-GB", "en-US");
     verifyLocalePair(localePair);
 
     const nodeRoot = LOCALE_PAIRS_MAPPING[localePair];
     const prefixTree = new PrefixTree(nodeRoot);
 
-    const allWords = prefixTree.searchAllWords(text, false);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const allWords = prefixTree.searchAllWords(text, false, pairedUserDictionary);
     return allWords.join(", ");
 }
 
@@ -118,7 +125,7 @@ function ADR_LIST_UK_TO_US(text: string): string {
  * @return The input text with all US dialect words revealed and all other words redacted.
  * @customfunction
  * */
-function ADR_REVEAL_US(text: string, replaceOther: string = ""): string {
+function ADR_REVEAL_US(text: string, replaceOther: string = "", userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-US", "en-GB");
     verifyLocalePair(localePair);
 
@@ -129,7 +136,8 @@ function ADR_REVEAL_US(text: string, replaceOther: string = ""): string {
         ? replaceOther.slice(0, 1)
         : "_";
 
-    const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, true);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, true, pairedUserDictionary);
     return revealedText;
 }
 
@@ -141,7 +149,7 @@ function ADR_REVEAL_US(text: string, replaceOther: string = ""): string {
  * @return The input text with all UK dialect words revealed and all other words redacted.
  * @customfunction
  * */
-function ADR_REVEAL_UK(text: string, replaceOther: string = ""): string {
+function ADR_REVEAL_UK(text: string, replaceOther: string = "", userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-GB", "en-US");
     verifyLocalePair(localePair);
 
@@ -152,7 +160,8 @@ function ADR_REVEAL_UK(text: string, replaceOther: string = ""): string {
         ? replaceOther.slice(0, 1)
         : "_";
 
-    const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, true);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, true, pairedUserDictionary);
     return revealedText;
 }
 
@@ -164,7 +173,7 @@ function ADR_REVEAL_UK(text: string, replaceOther: string = ""): string {
  * @return The input text with all US dialect words revealed and converted to UK dialect, and all other words redacted.
  * @customfunction
  * */
-function ADR_REVEAL_US_TO_UK(text: string, replaceOther: string = ""): string {
+function ADR_REVEAL_US_TO_UK(text: string, replaceOther: string = "", userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-US", "en-GB");
     verifyLocalePair(localePair);
 
@@ -175,7 +184,8 @@ function ADR_REVEAL_US_TO_UK(text: string, replaceOther: string = ""): string {
         ? replaceOther.slice(0, 1)
         : "_";
 
-    const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, false);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, false, pairedUserDictionary);
     return revealedText;
 }
 
@@ -187,7 +197,7 @@ function ADR_REVEAL_US_TO_UK(text: string, replaceOther: string = ""): string {
  * @return The input text with all UK dialect words revealed and converted to US dialect, and all other words redacted.
  * @customfunction
  * */
-function ADR_REVEAL_UK_TO_US(text: string, replaceOther: string = ""): string {
+function ADR_REVEAL_UK_TO_US(text: string, replaceOther: string = "", userDictionary?: Array<Array<string>>): string {
     const localePair = makeLocalePair("en-GB", "en-US");
     verifyLocalePair(localePair);
 
@@ -198,6 +208,7 @@ function ADR_REVEAL_UK_TO_US(text: string, replaceOther: string = ""): string {
         ? replaceOther.slice(0, 1)
         : "_";
 
-    const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, false);
+    const pairedUserDictionary = prepareCustomDictionary((userDictionary) ? userDictionary : null);
+    const revealedText = prefixTree.revealAllWords(text, replaceOtherChecked, false, pairedUserDictionary);
     return revealedText;
 }
