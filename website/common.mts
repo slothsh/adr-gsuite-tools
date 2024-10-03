@@ -123,7 +123,6 @@ export namespace Common {
             this.element = menuElement;
             // @ts-ignore
             this.button = buttonElement;
-            // @ts-ignore
         }
 
         static fromElementIds(menuId: string, buttonId: string): NavigationMenu | null {
@@ -177,9 +176,5 @@ export namespace Common {
             this.button.classList.toggle("nav-open");
             document.body.classList.toggle("nav-open");
         }
-
-        // element: HTMLElement;
-        // button: HTMLElement;
-        // open: boolean;
     }
 }
