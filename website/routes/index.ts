@@ -151,7 +151,7 @@ async function initThreeJs() {
 
     const loader = new OBJLoader();
 
-    const object = await loader.loadAsync( "/assets/logo-adrenaline.obj", () => {});
+    const object = await loader.loadAsync( "/assets/logo-adrenaline-lowpoly.obj", () => {});
 
 	object.scale.set(1.0, 1.0, 1.0);
     object.position.x = 1.0;
@@ -232,7 +232,7 @@ export default {
             },
             {
                 rel: "prefetch",
-                href: "/assets/logo-adrenaline.obj",
+                href: "/assets/logo-adrenaline-lowpoly.obj",
                 as: "text",
                 type: "text/plain",
             },
@@ -344,17 +344,7 @@ export default {
         {
             width: 1120,
             height: 630,
-            src: "https://www.youtube.com/embed/-niUBSx3PKQ?si=FSsHAmkdMh3RKVZN",
-            title: "YouTube video player",
-            frameborder: "0",
-            allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
-            referrerpolicy: "strict-origin-when-cross-origin",
-            allowfullscreen: true,
-        },
-        {
-            width: 1120,
-            height: 630,
-            src: "https://www.youtube.com/embed/-niUBSx3PKQ?si=FSsHAmkdMh3RKVZN",
+            src: "https://www.youtube.com/embed/yQf6u6FQx0Y?si: Nd1w6jegX11HFXwZ",
             title: "YouTube video player",
             frameborder: "0",
             allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",

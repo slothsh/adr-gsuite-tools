@@ -8,9 +8,9 @@ export namespace Common {
     export const APPLICATION_NAME = PRODUCT_NAME;
 
     export const CONTACT = {
-        emailPrivacy: "privacy@flibbingbits.com",
+        emailPrivacy: "support@flibbingbits.com",
         emailSupport: "support@flibbingbits.com",
-        emailContact: "hello@flibbingbits.com",
+        emailContact: "support@flibbingbits.com",
     };
 
     export const CONTENT = {
