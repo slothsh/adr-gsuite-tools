@@ -344,12 +344,12 @@ export default {
         {
             width: 1120,
             height: 630,
-            src: "https://www.youtube.com/embed/yQf6u6FQx0Y?si: Nd1w6jegX11HFXwZ",
+            src: "https://www.youtube.com/embed/fsShohqHDas?si=XU5z5xvZR5EpyFGA",
             title: "YouTube video player",
             frameborder: "0",
             allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
             referrerpolicy: "strict-origin-when-cross-origin",
             allowfullscreen: true,
-        },
+        }
     ]
 }
