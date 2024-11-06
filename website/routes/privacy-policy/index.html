@@ -44,7 +44,13 @@
                 {{#each privacyPolicy}}
                 <div>
                     <h3>{{this.title}}</h3>
-                    <p>{{{this.text}}}</p>
+                    {{#is-list this.text}}
+                        {{#each this.text}}
+                            <p>{{{this}}}</p><br>
+                        {{/each}}
+                    {{else}}
+                        <p>{{{this.text}}}</p>
+                    {{/is-list}}
                 </div>
                 {{/each}}
             </section>

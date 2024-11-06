@@ -3,7 +3,7 @@ import Handlebars from "handlebars";
 import { INFO, Result, Ok } from "@common/logging.mts";
 import { BUILD_DIR_WEBSITE, WEBSITE_ROUTES_DIR } from "@common/paths.mts";
 import { basename, dirname, resolve, relative } from "node:path";
-import { initializeHandlebars, createHelper } from "@common/handlebars.mts";
+import { initializeHandlebars, createHelper, type HandlebarsOptions } from "@common/handlebars.mts";
 import { readFileSync } from "node:fs";
 import {
     writeCompilationUnit,
@@ -192,6 +192,29 @@ export default async function (): Promise<Result> {
                 const html = template({ id: menuElementId, anchors, title, logo, postItems, copyright, copyrightLogo });
 
                 return html;
+            }
+        );
+
+
+        Handlebars.registerHelper(
+            "is-list",
+            function (value: any, options: HandlebarsOptions) {
+                if (Array.isArray(value)) {
+                    return options.fn(this);
+                }
+
+                return options.inverse(this);
+            }
+        );
+
+        Handlebars.registerHelper(
+            "is-string",
+            function (value: any, options: HandlebarsOptions) {
+                if (typeof value === "string") {
+                    return options.fn(this);
+                }
+
+                return options.inverse(this);
             }
         );
 

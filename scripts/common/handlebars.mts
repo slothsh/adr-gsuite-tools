@@ -12,8 +12,8 @@ import { resolve } from "node:path";
 //
 // -----------------------------------------------------------------------------
 
-type HandlebarsOptionsHash = { hash: { [key: string]: string }};
-type HandlebarsOptions = HandlebarsOptionsHash & { [key: PropertyKey]: any };
+export type HandlebarsOptionsHash = { hash: { [key: string]: string }};
+export type HandlebarsOptions = HandlebarsOptionsHash & { [key: PropertyKey]: any };
 
 // -----------------------------------------------------------------------------
 

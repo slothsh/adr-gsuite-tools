@@ -45,7 +45,7 @@ export default {
         ]
     },
 
-    lastUpdated: new Date("2024-09-03").toDateString(),
+    lastUpdated: new Date("2024-11-06").toDateString(),
 
     privacyPolicy: [
         {
@@ -61,6 +61,15 @@ export default {
         {
             title: "No Use of Cookies or Tracking Technologies",
             text: "Our web application does not use cookies, tracking pixels, or any other similar technologies to collect user data. We do not engage in any form of tracking or data collection while you use our application.",
+        },
+
+        {
+            title: "Data Protection and Security",
+            text: [
+                "We are committed to safeguarding the personal information you share with us. To ensure the protection of your data, we implement a variety of security measures, including encryption, access controls, and regular security audits.",
+                "Although we do not capture or store any personal data, in the event that your personal information is stored, we will do so using secure servers that are accessible only to authorized personnel who have a legitimate need to access the data in order to provide services.",
+                "Additionally, we follow industry best practices and comply with relevant data protection laws to prevent unauthorized access, use, or disclosure of your information. However, please be aware that no method of electronic storage or transmission is 100% secure, and while we strive to use commercially acceptable means to protect your data, we cannot guarantee absolute security.",
+            ],
         },
 
         {
